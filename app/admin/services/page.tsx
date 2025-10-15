@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Mic, Video, Lightbulb, Music, Camera, Headphones } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import { ServiceDialog } from "@/components/service-dialog"
@@ -19,6 +20,59 @@ import {
 } from "@/components/ui/alert-dialog"
 
 export default function ServicesPage() {
+  const defaultServices = [
+    {
+      id: "1",
+      title: "Audio Production",
+      description: "Professional recording, mixing, and mastering services for music, podcasts, and voiceovers",
+      icon: "mic",
+      price: "Starting at $500",
+    },
+    {
+      id: "2",
+      title: "Video Production",
+      description: "Cinematic storytelling through high-quality video production, editing, and color grading",
+      icon: "video",
+      price: "Starting at $1,000",
+    },
+    {
+      id: "3",
+      title: "Sound Design",
+      description: "Custom sound effects, foley, and audio post-production for film and media",
+      icon: "headphones",
+      price: "Starting at $750",
+    },
+    {
+      id: "4",
+      title: "Music Production",
+      description: "Original composition, arrangement, and production for various media projects",
+      icon: "music",
+      price: "Starting at $800",
+    },
+    {
+      id: "5",
+      title: "Cinematography",
+      description: "Professional camera work and lighting for commercials, documentaries, and films",
+      icon: "camera",
+      price: "Starting at $1,200",
+    },
+    {
+      id: "6",
+      title: "Creative Consulting",
+      description: "Strategic guidance for your creative projects, brand storytelling, and content planning",
+      icon: "lightbulb",
+      price: "Starting at $300",
+    },
+  ];
+  const iconMap: Record<string, any> = {
+    mic: Mic,
+    video: Video,
+    lightbulb: Lightbulb,
+    music: Music,
+    camera: Camera,
+    headphones: Headphones,
+  };
+
   const [services, setServices] = useState<Service[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedService, setSelectedService] = useState<Service | null>(null)
@@ -26,33 +80,50 @@ export default function ServicesPage() {
   const [serviceToDelete, setServiceToDelete] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchServices()
+    const stored = localStorage.getItem("services")
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed.length > 0) {
+        setServices(parsed)
+      } else {
+        localStorage.setItem("services", JSON.stringify(defaultServices))
+        setServices(defaultServices)
+      }
+    } else {
+      localStorage.setItem("services", JSON.stringify(defaultServices))
+      setServices(defaultServices)
+    }
   }, [])
 
-  const fetchServices = async () => {
-    const response = await fetch("/api/services")
-    const data = await response.json()
+  const saveToLocalStorage = (data: Service[]) => {
+    localStorage.setItem("services", JSON.stringify(data))
     setServices(data)
   }
 
-  const handleSave = async (service: Omit<Service, "id"> | Service) => {
+  const handleSave = (service: Omit<Service, "id"> | Service) => {
+    // Auto-generate icon based on title
+    const getIconFromTitle = (title: string) => {
+      const lower = title.toLowerCase();
+      if (lower.includes("audio")) return "music";
+      if (lower.includes("sound")) return "headphones";
+      if (lower.includes("video")) return "video";
+      if (lower.includes("mic") || lower.includes("record")) return "mic";
+      if (lower.includes("camera") || lower.includes("photo")) return "camera";
+      if (lower.includes("creative") || lower.includes("consult")) return "lightbulb";
+      return "lightbulb";
+    };
+    let updated: Service[];
     if ("id" in service) {
-      // Update existing service
-      await fetch(`/api/services/${service.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(service),
-      })
+      // Update
+      const icon = getIconFromTitle(service.title);
+      updated = services.map(s => s.id === service.id ? { ...service, icon } : s);
     } else {
-      // Create new service
-      await fetch("/api/services", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(service),
-      })
+      // Create
+      const icon = getIconFromTitle(service.title);
+      updated = [...services, { ...service, id: Date.now().toString(), icon }];
     }
-    fetchServices()
-    setSelectedService(null)
+    saveToLocalStorage(updated);
+    setSelectedService(null);
   }
 
   const handleEdit = (service: Service) => {
@@ -60,17 +131,23 @@ export default function ServicesPage() {
     setDialogOpen(true)
   }
 
+  const handleDelete = (id: string) => {
+    const updated = services.filter(s => s.id !== id)
+    saveToLocalStorage(updated)
+    setDeleteDialogOpen(false)
+    setServiceToDelete(null)
+  }
+
   const handleDeleteClick = (id: string) => {
     setServiceToDelete(id)
     setDeleteDialogOpen(true)
   }
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (serviceToDelete) {
-      await fetch(`/api/services/${serviceToDelete}`, {
-        method: "DELETE",
-      })
-      fetchServices()
+      const updated = services.filter(s => s.id !== serviceToDelete)
+      localStorage.setItem("services", JSON.stringify(updated))
+      setServices(updated)
       setServiceToDelete(null)
     }
     setDeleteDialogOpen(false)
@@ -94,60 +171,50 @@ export default function ServicesPage() {
         </Button>
       </div>
 
-      <Card className="bg-[#1A1A1A] border-[#27272A]">
-        <CardHeader>
-          <CardTitle className="text-[#F3F4F6]">All Services</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {services.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-[#9CA3AF]">No services yet. Add your first service to get started.</p>
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-[#27272A] hover:bg-[#0E0E0E]">
-                  <TableHead className="text-[#9CA3AF]">Icon</TableHead>
-                  <TableHead className="text-[#9CA3AF]">Title</TableHead>
-                  <TableHead className="text-[#9CA3AF]">Description</TableHead>
-                  <TableHead className="text-[#9CA3AF]">Price</TableHead>
-                  <TableHead className="text-[#9CA3AF] text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {services.map((service) => (
-                  <TableRow key={service.id} className="border-[#27272A] hover:bg-[#0E0E0E]">
-                    <TableCell className="text-[#F3F4F6]">{service.icon}</TableCell>
-                    <TableCell className="font-medium text-[#F3F4F6]">{service.title}</TableCell>
-                    <TableCell className="text-[#9CA3AF] max-w-md truncate">{service.description}</TableCell>
-                    <TableCell className="text-[#F3F4F6]">{service.price}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(service)}
-                          className="text-[#C5A36C] hover:bg-[#0E0E0E] hover:text-[#C5A36C]"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteClick(service.id)}
-                          className="text-[#EF4444] hover:bg-[#0E0E0E] hover:text-[#EF4444]"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.length === 0 ? (
+          <div className="text-center py-12 col-span-3">
+            <p className="text-[#9CA3AF]">No services yet. Add your first service to get started.</p>
+          </div>
+        ) : (
+          services.map((service) => {
+            const IconComponent = iconMap[service.icon] || Lightbulb
+            return (
+              <Card
+                key={service.id}
+                className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors relative"
+              >
+                <CardHeader>
+                  <IconComponent className="w-12 h-12 text-[#F97316] mb-4" />
+                  <CardTitle className="text-[#F3F4F6]">{service.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-[#9CA3AF] mb-4 leading-relaxed">{service.description}</p>
+                  <p className="text-[#C5A36C] font-semibold mb-4">{service.price}</p>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(service)}
+                      className="text-[#C5A36C] hover:bg-[#0E0E0E] hover:text-[#C5A36C]"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(service.id)}
+                      className="text-[#EF4444] hover:bg-[#0E0E0E] hover:text-[#EF4444]"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })
+        )}
+      </div>
 
       <ServiceDialog open={dialogOpen} onOpenChange={setDialogOpen} service={selectedService} onSave={handleSave} />
 

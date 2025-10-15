@@ -1,9 +1,10 @@
 export interface PortfolioWork {
-  id: string
-  title: string
-  description: string
-  imageUrl: string
-  category: string
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  clientName: string;
 }
 
 // In-memory storage for portfolio works (in production, use a database)

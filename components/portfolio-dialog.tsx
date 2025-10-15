@@ -29,6 +29,7 @@ export function PortfolioDialog({ open, onOpenChange, work, onSave }: PortfolioD
     description: "",
     imageUrl: "",
     category: "",
+    clientName: "",
   })
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export function PortfolioDialog({ open, onOpenChange, work, onSave }: PortfolioD
         description: work.description,
         imageUrl: work.imageUrl,
         category: work.category,
+        clientName: work.clientName || "",
       })
     } else {
       setFormData({
@@ -45,6 +47,7 @@ export function PortfolioDialog({ open, onOpenChange, work, onSave }: PortfolioD
         description: "",
         imageUrl: "",
         category: "",
+        clientName: "",
       })
     }
   }, [work, open])
@@ -117,6 +120,19 @@ export function PortfolioDialog({ open, onOpenChange, work, onSave }: PortfolioD
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 required
                 placeholder="e.g., Music Production, Sound Design"
+                className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="clientName" className="text-[#F3F4F6]">
+                Client Name
+              </Label>
+              <Input
+                id="clientName"
+                value={formData.clientName}
+                onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                required
+                placeholder="e.g., Local Business Co."
                 className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
               />
             </div>

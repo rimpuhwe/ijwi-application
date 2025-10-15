@@ -1,7 +1,19 @@
+"use client"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Briefcase, FolderOpen, TrendingUp } from "lucide-react"
 
 export default function DashboardPage() {
+  const [serviceCount, setServiceCount] = useState(0)
+  const [portfolioCount, setPortfolioCount] = useState(0)
+
+  useEffect(() => {
+    const storedServices = localStorage.getItem("services")
+    const storedPortfolio = localStorage.getItem("portfolio")
+    setServiceCount(storedServices ? JSON.parse(storedServices).length : 0)
+    setPortfolioCount(storedPortfolio ? JSON.parse(storedPortfolio).length : 0)
+  }, [])
+
   return (
     <div className="space-y-8">
       <div>
@@ -16,7 +28,7 @@ export default function DashboardPage() {
             <Briefcase className="h-4 w-4 text-[#F97316]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#F3F4F6]">0</div>
+            <div className="text-2xl font-bold text-[#F3F4F6]">{serviceCount}</div>
             <p className="text-xs text-[#9CA3AF] mt-1">Manage your services</p>
           </CardContent>
         </Card>
@@ -27,7 +39,7 @@ export default function DashboardPage() {
             <FolderOpen className="h-4 w-4 text-[#C5A36C]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#F3F4F6]">0</div>
+            <div className="text-2xl font-bold text-[#F3F4F6]">{portfolioCount}</div>
             <p className="text-xs text-[#9CA3AF] mt-1">Showcase your projects</p>
           </CardContent>
         </Card>

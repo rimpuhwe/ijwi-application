@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import { PortfolioDialog } from "@/components/portfolio-dialog"
 import type { PortfolioWork } from "@/lib/portfolio-data"
@@ -16,9 +17,58 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import Image from "next/image"
-
 export default function PortfolioPage() {
+  const defaultPortfolio = [
+    {
+      id: "1",
+      title: "Brand Documentary",
+      description: "A cinematic documentary showcasing the journey of a local business",
+      category: "Video Production",
+      imageUrl: "/cinematic-documentary-film-production.jpg",
+      clientName: "Local Business Co.",
+    },
+    {
+      id: "2",
+      title: "Music Album Production",
+      description: "Full album recording, mixing, and mastering for emerging artist",
+      category: "Audio Production",
+      imageUrl: "/music-studio-recording-session.jpg",
+      clientName: "Rising Star Artist",
+    },
+    {
+      id: "3",
+      title: "Commercial Campaign",
+      description: "Multi-platform commercial campaign with stunning visuals",
+      category: "Video Production",
+      imageUrl: "/commercial-video-production-set.jpg",
+      clientName: "Tech Startup",
+    },
+    {
+      id: "4",
+      title: "Podcast Series",
+      description: "Professional podcast recording and post-production",
+      category: "Audio Production",
+      imageUrl: "/podcast-recording-studio-setup.jpg",
+      clientName: "Media Company",
+    },
+    {
+      id: "5",
+      title: "Event Coverage",
+      description: "Comprehensive video and audio coverage of corporate event",
+      category: "Video Production",
+      imageUrl: "/event-videography-coverage.jpg",
+      clientName: "Corporate Client",
+    },
+    {
+      id: "6",
+      title: "Sound Design Project",
+      description: "Custom sound design and audio branding for digital platform",
+      category: "Sound Design",
+      imageUrl: "/sound-design-audio-mixing.jpg",
+      clientName: "Digital Platform",
+    },
+  ];
+
   const [works, setWorks] = useState<PortfolioWork[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedWork, setSelectedWork] = useState<PortfolioWork | null>(null)
@@ -26,32 +76,36 @@ export default function PortfolioPage() {
   const [workToDelete, setWorkToDelete] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchWorks()
+    const stored = localStorage.getItem("portfolio")
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed.length > 0) {
+        setWorks(parsed)
+      } else {
+        localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio))
+        setWorks(defaultPortfolio)
+      }
+    } else {
+      localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio))
+      setWorks(defaultPortfolio)
+    }
   }, [])
 
-  const fetchWorks = async () => {
-    const response = await fetch("/api/portfolio")
-    const data = await response.json()
+  const saveToLocalStorage = (data: PortfolioWork[]) => {
+    localStorage.setItem("portfolio", JSON.stringify(data))
     setWorks(data)
   }
 
-  const handleSave = async (work: Omit<PortfolioWork, "id"> | PortfolioWork) => {
+  const handleSave = (work: Omit<PortfolioWork, "id"> | PortfolioWork) => {
+    let updated: PortfolioWork[]
     if ("id" in work) {
-      // Update existing work
-      await fetch(`/api/portfolio/${work.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(work),
-      })
+      // Update
+      updated = works.map(w => w.id === work.id ? { ...work } : w)
     } else {
-      // Create new work
-      await fetch("/api/portfolio", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(work),
-      })
+      // Create
+      updated = [...works, { ...work, id: Date.now().toString() }]
     }
-    fetchWorks()
+    saveToLocalStorage(updated)
     setSelectedWork(null)
   }
 
@@ -60,17 +114,23 @@ export default function PortfolioPage() {
     setDialogOpen(true)
   }
 
+  const handleDelete = (id: string) => {
+    const updated = works.filter(w => w.id !== id)
+    saveToLocalStorage(updated)
+    setDeleteDialogOpen(false)
+    setWorkToDelete(null)
+  }
+
   const handleDeleteClick = (id: string) => {
     setWorkToDelete(id)
     setDeleteDialogOpen(true)
   }
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (workToDelete) {
-      await fetch(`/api/portfolio/${workToDelete}`, {
-        method: "DELETE",
-      })
-      fetchWorks()
+      const updated = works.filter(w => w.id !== workToDelete)
+      localStorage.setItem("portfolio", JSON.stringify(updated))
+      setWorks(updated)
       setWorkToDelete(null)
     }
     setDeleteDialogOpen(false)
@@ -94,18 +154,14 @@ export default function PortfolioPage() {
         </Button>
       </div>
 
-      {works.length === 0 ? (
-        <Card className="bg-[#1A1A1A] border-[#27272A]">
-          <CardContent className="py-12">
-            <div className="text-center">
-              <p className="text-[#9CA3AF]">No portfolio works yet. Add your first work to get started.</p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {works.map((work) => (
-            <Card key={work.id} className="bg-[#1A1A1A] border-[#27272A] overflow-hidden group">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {works.length === 0 ? (
+          <div className="text-center py-12 col-span-3">
+            <p className="text-[#9CA3AF]">No portfolio works yet. Add your first work to get started.</p>
+          </div>
+        ) : (
+          works.map((work) => (
+            <Card key={work.id} className="bg-[#1A1A1A] border-[#27272A] overflow-hidden group relative">
               <div className="relative h-48 bg-[#0E0E0E]">
                 <Image
                   src={work.imageUrl || "/placeholder.svg"}
@@ -136,7 +192,7 @@ export default function PortfolioPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => handleDeleteClick(work.id)}
+                      onClick={() => handleDelete(work.id)}
                       className="text-[#EF4444] hover:bg-[#0E0E0E] hover:text-[#EF4444] h-8 w-8"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -146,11 +202,12 @@ export default function PortfolioPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-[#9CA3AF] text-sm line-clamp-2">{work.description}</p>
+                <p className="text-[#C5A36C] text-xs mt-2">Client: {work.clientName}</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
 
       <PortfolioDialog open={dialogOpen} onOpenChange={setDialogOpen} work={selectedWork} onSave={handleSave} />
 

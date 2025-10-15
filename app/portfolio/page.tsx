@@ -72,18 +72,17 @@ export default function PortfolioPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
-    // Fetch portfolio from API
-    fetch("/api/portfolio")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.length > 0) {
-          setPortfolio(data)
-        }
-      })
-      .catch(() => {
-        // Use default portfolio if API fails
+    const stored = localStorage.getItem("portfolio")
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed.length > 0) {
+        setPortfolio(parsed)
+      } else {
         setPortfolio(defaultPortfolio)
-      })
+      }
+    } else {
+      setPortfolio(defaultPortfolio)
+    }
   }, [])
 
   const handleViewProject = (item: PortfolioItem) => {

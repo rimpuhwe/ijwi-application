@@ -75,18 +75,17 @@ export default function ServicesPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
-    // Fetch services from API
-    fetch("/api/services")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.length > 0) {
-          setServices(data)
-        }
-      })
-      .catch(() => {
-        // Use default services if API fails
+    const stored = localStorage.getItem("services")
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed.length > 0) {
+        setServices(parsed)
+      } else {
         setServices(defaultServices)
-      })
+      }
+    } else {
+      setServices(defaultServices)
+    }
   }, [])
 
   const handleLearnMore = (service: Service) => {
