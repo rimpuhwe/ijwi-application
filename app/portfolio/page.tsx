@@ -1,17 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import Image from "next/image"
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import Image from "next/image";
 
 interface PortfolioItem {
-  id: string
-  title: string
-  description: string
-  category: string
-  imageUrl: string
-  clientName: string
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  imageUrl: string;
+  clientName: string;
 }
 
 // Default portfolio items
@@ -19,7 +24,8 @@ const defaultPortfolio: PortfolioItem[] = [
   {
     id: "1",
     title: "Brand Documentary",
-    description: "A cinematic documentary showcasing the journey of a local business",
+    description:
+      "A cinematic documentary showcasing the journey of a local business",
     category: "Video Production",
     imageUrl: "/cinematic-documentary-film-production.jpg",
     clientName: "Local Business Co.",
@@ -27,7 +33,8 @@ const defaultPortfolio: PortfolioItem[] = [
   {
     id: "2",
     title: "Music Album Production",
-    description: "Full album recording, mixing, and mastering for emerging artist",
+    description:
+      "Full album recording, mixing, and mastering for emerging artist",
     category: "Audio Production",
     imageUrl: "/music-studio-recording-session.jpg",
     clientName: "Rising Star Artist",
@@ -64,31 +71,31 @@ const defaultPortfolio: PortfolioItem[] = [
     imageUrl: "/sound-design-audio-mixing.jpg",
     clientName: "Digital Platform",
   },
-]
+];
 
 export default function PortfolioPage() {
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(defaultPortfolio)
-  const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(defaultPortfolio);
+  const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("portfolio")
+    const stored = localStorage.getItem("portfolio");
     if (stored) {
-      const parsed = JSON.parse(stored)
+      const parsed = JSON.parse(stored);
       if (parsed.length > 0) {
-        setPortfolio(parsed)
+        setPortfolio(parsed);
       } else {
-        setPortfolio(defaultPortfolio)
+        setPortfolio(defaultPortfolio);
       }
     } else {
-      setPortfolio(defaultPortfolio)
+      setPortfolio(defaultPortfolio);
     }
-  }, [])
+  }, []);
 
   const handleViewProject = (item: PortfolioItem) => {
-    setSelectedItem(item)
-    setDialogOpen(true)
-  }
+    setSelectedItem(item);
+    setDialogOpen(true);
+  };
 
   return (
     <div className="bg-[#0E0E0E] min-h-screen">
@@ -99,8 +106,8 @@ export default function PortfolioPage() {
             Our <span className="text-[#F97316]">Work</span>
           </h1>
           <p className="text-lg text-[#9CA3AF] leading-relaxed text-pretty">
-            Explore our portfolio of creative projects showcasing our expertise in audio and video production,
-            storytelling, and sound design.
+            Explore our portfolio of creative projects showcasing our expertise
+            in audio and video production, storytelling, and sound design.
           </p>
         </div>
       </section>
@@ -130,9 +137,15 @@ export default function PortfolioPage() {
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">{item.title}</h3>
-                  <p className="text-[#9CA3AF] text-sm leading-relaxed mb-2">{item.description}</p>
-                  <p className="text-[#C5A36C] text-sm">Client: {item.clientName}</p>
+                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed mb-2">
+                    {item.description}
+                  </p>
+                  <p className="text-[#C5A36C] text-sm">
+                    Client: {item.clientName}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -144,7 +157,9 @@ export default function PortfolioPage() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-3xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl text-[#F3F4F6]">{selectedItem?.title}</DialogTitle>
+            <DialogTitle className="text-2xl text-[#F3F4F6]">
+              {selectedItem?.title}
+            </DialogTitle>
           </DialogHeader>
           {selectedItem && (
             <div className="space-y-4">
@@ -160,10 +175,13 @@ export default function PortfolioPage() {
                 <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-4">
                   {selectedItem.category}
                 </span>
-                <p className="text-[#9CA3AF] leading-relaxed mb-4">{selectedItem.description}</p>
+                <p className="text-[#9CA3AF] leading-relaxed mb-4">
+                  {selectedItem.description}
+                </p>
                 <div className="border-t border-[#27272A] pt-4">
                   <p className="text-[#C5A36C]">
-                    <span className="font-semibold">Client:</span> {selectedItem.clientName}
+                    <span className="font-semibold">Client:</span>{" "}
+                    {selectedItem.clientName}
                   </p>
                 </div>
               </div>
@@ -172,5 +190,5 @@ export default function PortfolioPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

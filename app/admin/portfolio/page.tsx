@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
-import { Plus, Pencil, Trash2 } from "lucide-react"
-import { PortfolioDialog } from "@/components/portfolio-dialog"
-import type { PortfolioWork } from "@/lib/portfolio-data"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import { PortfolioDialog } from "@/components/portfolio-dialog";
+import type { PortfolioWork } from "@/lib/portfolio-data";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,13 +16,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 export default function PortfolioPage() {
   const defaultPortfolio = [
     {
       id: "1",
       title: "Brand Documentary",
-      description: "A cinematic documentary showcasing the journey of a local business",
+      description:
+        "A cinematic documentary showcasing the journey of a local business",
       category: "Video Production",
       imageUrl: "/cinematic-documentary-film-production.jpg",
       clientName: "Local Business Co.",
@@ -30,7 +31,8 @@ export default function PortfolioPage() {
     {
       id: "2",
       title: "Music Album Production",
-      description: "Full album recording, mixing, and mastering for emerging artist",
+      description:
+        "Full album recording, mixing, and mastering for emerging artist",
       category: "Audio Production",
       imageUrl: "/music-studio-recording-session.jpg",
       clientName: "Rising Star Artist",
@@ -62,93 +64,101 @@ export default function PortfolioPage() {
     {
       id: "6",
       title: "Sound Design Project",
-      description: "Custom sound design and audio branding for digital platform",
+      description:
+        "Custom sound design and audio branding for digital platform",
       category: "Sound Design",
       imageUrl: "/sound-design-audio-mixing.jpg",
       clientName: "Digital Platform",
     },
   ];
 
-  const [works, setWorks] = useState<PortfolioWork[]>([])
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [selectedWork, setSelectedWork] = useState<PortfolioWork | null>(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [workToDelete, setWorkToDelete] = useState<string | null>(null)
+  const [works, setWorks] = useState<PortfolioWork[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedWork, setSelectedWork] = useState<PortfolioWork | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [workToDelete, setWorkToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("portfolio")
+    const stored = localStorage.getItem("portfolio");
     if (stored) {
-      const parsed = JSON.parse(stored)
+      const parsed = JSON.parse(stored);
       if (parsed.length > 0) {
-        setWorks(parsed)
+        setWorks(parsed);
       } else {
-        localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio))
-        setWorks(defaultPortfolio)
+        localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio));
+        setWorks(defaultPortfolio);
       }
     } else {
-      localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio))
-      setWorks(defaultPortfolio)
+      localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio));
+      setWorks(defaultPortfolio);
     }
-  }, [])
+  }, []);
 
   const saveToLocalStorage = (data: PortfolioWork[]) => {
-    localStorage.setItem("portfolio", JSON.stringify(data))
-    setWorks(data)
-  }
+    localStorage.setItem("portfolio", JSON.stringify(data));
+    setWorks(data);
+  };
 
   const handleSave = (work: Omit<PortfolioWork, "id"> | PortfolioWork) => {
-    let updated: PortfolioWork[]
+    let updated: PortfolioWork[];
     if ("id" in work) {
       // Update
-      updated = works.map(w => w.id === work.id ? { ...work } : w)
+      updated = works.map((w) => (w.id === work.id ? { ...work } : w));
     } else {
       // Create
-      updated = [...works, { ...work, id: Date.now().toString() }]
+      updated = [...works, { ...work, id: Date.now().toString() }];
     }
-    saveToLocalStorage(updated)
-    setSelectedWork(null)
-  }
+    saveToLocalStorage(updated);
+    setSelectedWork(null);
+  };
 
   const handleEdit = (work: PortfolioWork) => {
-    setSelectedWork(work)
-    setDialogOpen(true)
-  }
+    setSelectedWork(work);
+    setDialogOpen(true);
+  };
 
   const handleDelete = (id: string) => {
-    const updated = works.filter(w => w.id !== id)
-    saveToLocalStorage(updated)
-    setDeleteDialogOpen(false)
-    setWorkToDelete(null)
-  }
+    const updated = works.filter((w) => w.id !== id);
+    saveToLocalStorage(updated);
+    setDeleteDialogOpen(false);
+    setWorkToDelete(null);
+  };
 
   const handleDeleteClick = (id: string) => {
-    setWorkToDelete(id)
-    setDeleteDialogOpen(true)
-  }
+    setWorkToDelete(id);
+    setDeleteDialogOpen(true);
+  };
 
   const handleDeleteConfirm = () => {
     if (workToDelete) {
-      const updated = works.filter(w => w.id !== workToDelete)
-      localStorage.setItem("portfolio", JSON.stringify(updated))
-      setWorks(updated)
-      setWorkToDelete(null)
+      const updated = works.filter((w) => w.id !== workToDelete);
+      localStorage.setItem("portfolio", JSON.stringify(updated));
+      setWorks(updated);
+      setWorkToDelete(null);
     }
-    setDeleteDialogOpen(false)
-  }
+    setDeleteDialogOpen(false);
+  };
 
   const handleAddNew = () => {
-    setSelectedWork(null)
-    setDialogOpen(true)
-  }
+    setSelectedWork(null);
+    setDialogOpen(true);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#F3F4F6]">Portfolio Management</h1>
-          <p className="text-[#9CA3AF] mt-2">Showcase your creative works and projects</p>
+          <h1 className="text-3xl font-bold text-[#F3F4F6]">
+            Portfolio Management
+          </h1>
+          <p className="text-[#9CA3AF] mt-2">
+            Showcase your creative works and projects
+          </p>
         </div>
-        <Button onClick={handleAddNew} className="bg-[#F97316] hover:bg-[#EA580C] text-white">
+        <Button
+          onClick={handleAddNew}
+          className="bg-[#F97316] hover:bg-[#EA580C] text-white"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Work
         </Button>
@@ -157,11 +167,16 @@ export default function PortfolioPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {works.length === 0 ? (
           <div className="text-center py-12 col-span-3">
-            <p className="text-[#9CA3AF]">No portfolio works yet. Add your first work to get started.</p>
+            <p className="text-[#9CA3AF]">
+              No portfolio works yet. Add your first work to get started.
+            </p>
           </div>
         ) : (
           works.map((work) => (
-            <Card key={work.id} className="bg-[#1A1A1A] border-[#27272A] overflow-hidden group relative">
+            <Card
+              key={work.id}
+              className="bg-[#1A1A1A] border-[#27272A] overflow-hidden group relative"
+            >
               <div className="relative h-48 bg-[#0E0E0E]">
                 <Image
                   src={work.imageUrl || "/placeholder.svg"}
@@ -169,16 +184,22 @@ export default function PortfolioPage() {
                   fill
                   className="object-cover"
                   onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src = `/placeholder.svg?height=200&width=400&query=${encodeURIComponent(work.title)}`
+                    const target = e.target as HTMLImageElement;
+                    target.src = `/placeholder.svg?height=200&width=400&query=${encodeURIComponent(
+                      work.title
+                    )}`;
                   }}
                 />
               </div>
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <CardTitle className="text-[#F3F4F6] text-lg">{work.title}</CardTitle>
-                    <p className="text-sm text-[#C5A36C] mt-1">{work.category}</p>
+                    <CardTitle className="text-[#F3F4F6] text-lg">
+                      {work.title}
+                    </CardTitle>
+                    <p className="text-sm text-[#C5A36C] mt-1">
+                      {work.category}
+                    </p>
                   </div>
                   <div className="flex gap-1">
                     <Button
@@ -201,32 +222,49 @@ export default function PortfolioPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-[#9CA3AF] text-sm line-clamp-2">{work.description}</p>
-                <p className="text-[#C5A36C] text-xs mt-2">Client: {work.clientName}</p>
+                <p className="text-[#9CA3AF] text-sm line-clamp-2">
+                  {work.description}
+                </p>
+                <p className="text-[#C5A36C] text-xs mt-2">
+                  Client: {work.clientName}
+                </p>
               </CardContent>
             </Card>
           ))
         )}
       </div>
 
-      <PortfolioDialog open={dialogOpen} onOpenChange={setDialogOpen} work={selectedWork} onSave={handleSave} />
+      <PortfolioDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        work={selectedWork}
+        onSave={handleSave}
+      />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent className="bg-[#1A1A1A] border-[#27272A]">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#F3F4F6]">Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle className="text-[#F3F4F6]">
+              Are you sure?
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-[#9CA3AF]">
-              This action cannot be undone. This will permanently delete the portfolio work.
+              This action cannot be undone. This will permanently delete the
+              portfolio work.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#27272A] text-[#9CA3AF] hover:bg-[#0E0E0E]">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-[#EF4444] hover:bg-[#DC2626] text-white">
+            <AlertDialogCancel className="border-[#27272A] text-[#9CA3AF] hover:bg-[#0E0E0E]">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-[#EF4444] hover:bg-[#DC2626] text-white"
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }

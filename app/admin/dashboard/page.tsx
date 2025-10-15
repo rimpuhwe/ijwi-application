@@ -1,52 +1,66 @@
-"use client"
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Briefcase, FolderOpen, TrendingUp } from "lucide-react"
+"use client";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Briefcase, FolderOpen, TrendingUp } from "lucide-react";
 
 export default function DashboardPage() {
-  const [serviceCount, setServiceCount] = useState(0)
-  const [portfolioCount, setPortfolioCount] = useState(0)
+  const [serviceCount, setServiceCount] = useState(0);
+  const [portfolioCount, setPortfolioCount] = useState(0);
 
   useEffect(() => {
-    const storedServices = localStorage.getItem("services")
-    const storedPortfolio = localStorage.getItem("portfolio")
-    setServiceCount(storedServices ? JSON.parse(storedServices).length : 0)
-    setPortfolioCount(storedPortfolio ? JSON.parse(storedPortfolio).length : 0)
-  }, [])
+    const storedServices = localStorage.getItem("services");
+    const storedPortfolio = localStorage.getItem("portfolio");
+    setServiceCount(storedServices ? JSON.parse(storedServices).length : 0);
+    setPortfolioCount(storedPortfolio ? JSON.parse(storedPortfolio).length : 0);
+  }, []);
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-[#F3F4F6]">Dashboard</h1>
-        <p className="text-[#9CA3AF] mt-2">Welcome to IJWI Hub Admin Dashboard</p>
+        <p className="text-[#9CA3AF] mt-2">
+          Welcome to IJWI Hub Admin Dashboard
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-[#1A1A1A] border-[#27272A]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#9CA3AF]">Total Services</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#9CA3AF]">
+              Total Services
+            </CardTitle>
             <Briefcase className="h-4 w-4 text-[#F97316]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#F3F4F6]">{serviceCount}</div>
+            <div className="text-2xl font-bold text-[#F3F4F6]">
+              {serviceCount}
+            </div>
             <p className="text-xs text-[#9CA3AF] mt-1">Manage your services</p>
           </CardContent>
         </Card>
 
         <Card className="bg-[#1A1A1A] border-[#27272A]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#9CA3AF]">Portfolio Works</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#9CA3AF]">
+              Portfolio Works
+            </CardTitle>
             <FolderOpen className="h-4 w-4 text-[#C5A36C]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#F3F4F6]">{portfolioCount}</div>
-            <p className="text-xs text-[#9CA3AF] mt-1">Showcase your projects</p>
+            <div className="text-2xl font-bold text-[#F3F4F6]">
+              {portfolioCount}
+            </div>
+            <p className="text-xs text-[#9CA3AF] mt-1">
+              Showcase your projects
+            </p>
           </CardContent>
         </Card>
 
         <Card className="bg-[#1A1A1A] border-[#27272A]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#9CA3AF]">Total Views</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#9CA3AF]">
+              Total Views
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-[#10B981]" />
           </CardHeader>
           <CardContent>
@@ -61,9 +75,12 @@ export default function DashboardPage() {
           <CardTitle className="text-[#F3F4F6]">Quick Actions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          <p className="text-[#9CA3AF]">Use the sidebar to navigate to Services or Portfolio management sections.</p>
+          <p className="text-[#9CA3AF]">
+            Use the sidebar to navigate to Services or Portfolio management
+            sections.
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
