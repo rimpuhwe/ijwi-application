@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 // import { login } from "@/lib/auth"; // No longer used directly
-
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -37,7 +35,10 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="bg-gray-900 p-8 rounded-lg w-full max-w-sm shadow-lg"
         aria-busy={isPending}
-        style={{ opacity: isPending ? 0.7 : 1, pointerEvents: isPending ? "none" : "auto" }}
+        style={{
+          opacity: isPending ? 0.7 : 1,
+          pointerEvents: isPending ? "none" : "auto",
+        }}
       >
         <h1 className="text-2xl font-semibold mb-6 text-center">Admin Login</h1>
 
@@ -68,13 +69,31 @@ export default function LoginPage() {
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
               </svg>
               Signing In...
             </span>
-          ) : "Sign In"}
+          ) : (
+            "Sign In"
+          )}
         </button>
       </form>
     </div>
