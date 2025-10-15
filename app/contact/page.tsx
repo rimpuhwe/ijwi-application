@@ -70,7 +70,7 @@ export default function ContactPage() {
               <CardContent className="p-6 text-center">
                 <Phone className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
                 <h3 className="text-[#F3F4F6] font-semibold mb-2">Phone</h3>
-                <p className="text-[#9CA3AF]">+250 XXX XXX XXX</p>
+                <p className="text-[#9CA3AF]">+250 788 544 839</p>
               </CardContent>
             </Card>
             <Card className="bg-[#1A1A1A] border-[#27272A]">
@@ -168,7 +168,8 @@ export default function ContactPage() {
                   <p className="text-[#9CA3AF] mb-6">Stay connected with us on social media</p>
                   <div className="flex gap-4">
                     <a
-                      href="#"
+                      href="https://www.instagram.com/ijwihub?utm_source=qr&igsh=NWIwMTduN3QyMXhu"
+                      target="_blank"
                       className="w-12 h-12 bg-[#0E0E0E] border border-[#27272A] rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#F97316] hover:border-[#F97316] transition-colors"
                     >
                       <Instagram size={20} />

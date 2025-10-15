@@ -46,7 +46,7 @@ export function Footer() {
             <h4 className="text-[#F3F4F6] font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-[#9CA3AF]">
               <li>Email: info@ijwihub.com</li>
-              <li>Phone: +250 XXX XXX XXX</li>
+              <li>Phone: +250 788 544 839</li>
               <li>Kigali, Rwanda</li>
             </ul>
           </div>
@@ -55,7 +55,7 @@ export function Footer() {
           <div>
             <h4 className="text-[#F3F4F6] font-semibold mb-4">Follow Us</h4>
             <div className="flex gap-4">
-              <a href="#" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a href="https://www.instagram.com/ijwihub?utm_source=qr&igsh=NWIwMTduN3QyMXhu" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
                 <Instagram size={20} />
               </a>
               <a href="#" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">

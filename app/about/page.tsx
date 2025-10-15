@@ -34,15 +34,15 @@ export default function AboutPage() {
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">Professional audio and video production services</p>
+                    <p className="text-[#9CA3AF]">To empower local talent and nurture African sound professionals</p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">State-of-the-art recording and editing facilities</p>
+                    <p className="text-[#9CA3AF]">To support and collaborate with independent film and media productions</p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#F97316] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">Expert guidance and creative collaboration</p>
+                    <p className="text-[#9CA3AF]">To train and inspire the next generation shaping the future of African sound</p>
                   </div>
                 </div>
               </CardContent>
@@ -60,15 +60,15 @@ export default function AboutPage() {
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#C5A36C] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">Leading Africa's creative sound innovation</p>
+                    <p className="text-[#9CA3AF]">To elevate African cinema and media through world-class sound design and post-production</p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#C5A36C] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">Pioneering storytelling revolution</p>
+                    <p className="text-[#9CA3AF]">To blend modern technology with Africa’s rich storytelling traditions</p>
                   </div>
                   <div className="flex items-start gap-4">
                     <div className="w-2 h-2 bg-[#C5A36C] rounded-full mt-2"></div>
-                    <p className="text-[#9CA3AF]">Building a thriving creative ecosystem</p>
+                    <p className="text-[#9CA3AF]">To make sound the soulful core of every African story</p>
                   </div>
                 </div>
               </CardContent>
