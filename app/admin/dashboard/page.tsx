@@ -2,16 +2,37 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, FolderOpen, TrendingUp } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardPage() {
   const [serviceCount, setServiceCount] = useState(0);
   const [portfolioCount, setPortfolioCount] = useState(0);
 
   useEffect(() => {
-    const storedServices = localStorage.getItem("services");
-    const storedPortfolio = localStorage.getItem("portfolio");
-    setServiceCount(storedServices ? JSON.parse(storedServices).length : 0);
-    setPortfolioCount(storedPortfolio ? JSON.parse(storedPortfolio).length : 0);
+    async function fetchCounts() {
+      const { count: serviceTotal, error: serviceError } = await supabase
+        .from("services")
+        .select("*", { count: "exact", head: true });
+      const { count: portfolioTotal, error: portfolioError } = await supabase
+        .from("portfolio")
+        .select("*", { count: "exact", head: true });
+      if (serviceError) {
+        console.error("Error fetching service count:", serviceError.message);
+        setServiceCount(0);
+      } else {
+        setServiceCount(serviceTotal || 0);
+      }
+      if (portfolioError) {
+        console.error(
+          "Error fetching portfolio count:",
+          portfolioError.message
+        );
+        setPortfolioCount(0);
+      } else {
+        setPortfolioCount(portfolioTotal || 0);
+      }
+    }
+    fetchCounts();
   }, []);
 
   return (

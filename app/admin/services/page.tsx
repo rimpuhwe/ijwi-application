@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from "@/lib/supabaseClient";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -93,23 +94,26 @@ export default function ServicesPage() {
   const [serviceToDelete, setServiceToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("services");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.length > 0) {
-        setServices(parsed);
+    async function fetchServices() {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        console.error("Error fetching services:", error.message);
+        setServices([]);
+      } else if (data && data.length > 0) {
+        setServices(data);
       } else {
-        localStorage.setItem("services", JSON.stringify(defaultServices));
-        setServices(defaultServices);
+        setServices([]);
       }
-    } else {
-      localStorage.setItem("services", JSON.stringify(defaultServices));
-      setServices(defaultServices);
     }
+    fetchServices();
   }, []);
 
   const saveToLocalStorage = (data: Service[]) => {
-    localStorage.setItem("services", JSON.stringify(data));
+    // Removed: localStorage logic
+    // Use Supabase for all CRUD
     setServices(data);
   };
 
@@ -126,20 +130,32 @@ export default function ServicesPage() {
         return "lightbulb";
       return "lightbulb";
     };
-    let updated: Service[];
-    if ("id" in service) {
-      // Update
-      const icon = getIconFromTitle(service.title);
-      updated = services.map((s) =>
-        s.id === service.id ? { ...service, icon } : s
-      );
-    } else {
-      // Create
-      const icon = getIconFromTitle(service.title);
-      updated = [...services, { ...service, id: Date.now().toString(), icon }];
+    async function saveService() {
+      if ("id" in service) {
+        // Update
+        const icon = getIconFromTitle(service.title);
+        const { error } = await supabase
+          .from("services")
+          .update({ ...service, icon })
+          .eq("id", service.id);
+        if (error) console.error("Error updating service:", error.message);
+      } else {
+        // Create
+        const icon = getIconFromTitle(service.title);
+        const { error } = await supabase
+          .from("services")
+          .insert([{ ...service, icon }]);
+        if (error) console.error("Error creating service:", error.message);
+      }
+      // Refetch after save
+      const { data } = await supabase
+        .from("services")
+        .select("*")
+        .order("id", { ascending: true });
+      setServices(data || []);
+      setSelectedService(null);
     }
-    saveToLocalStorage(updated);
-    setSelectedService(null);
+    saveService();
   };
 
   const handleEdit = (service: Service) => {
@@ -148,10 +164,19 @@ export default function ServicesPage() {
   };
 
   const handleDelete = (id: string) => {
-    const updated = services.filter((s) => s.id !== id);
-    saveToLocalStorage(updated);
-    setDeleteDialogOpen(false);
-    setServiceToDelete(null);
+    async function deleteService() {
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) console.error("Error deleting service:", error.message);
+      // Refetch after delete
+      const { data } = await supabase
+        .from("services")
+        .select("*")
+        .order("id", { ascending: true });
+      setServices(data || []);
+      setDeleteDialogOpen(false);
+      setServiceToDelete(null);
+    }
+    deleteService();
   };
 
   const handleDeleteClick = (id: string) => {
@@ -161,12 +186,10 @@ export default function ServicesPage() {
 
   const handleDeleteConfirm = () => {
     if (serviceToDelete) {
-      const updated = services.filter((s) => s.id !== serviceToDelete);
-      localStorage.setItem("services", JSON.stringify(updated));
-      setServices(updated);
-      setServiceToDelete(null);
+      handleDelete(serviceToDelete);
+    } else {
+      setDeleteDialogOpen(false);
     }
-    setDeleteDialogOpen(false);
   };
 
   const handleAddNew = () => {

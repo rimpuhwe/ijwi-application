@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { supabase } from "@/lib/supabaseClient";
 
 interface PortfolioItem {
   id: string;
@@ -74,22 +75,26 @@ const defaultPortfolio: PortfolioItem[] = [
 ];
 
 export default function PortfolioPage() {
-  const [portfolio, setPortfolio] = useState<PortfolioItem[]>(defaultPortfolio);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("portfolio");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.length > 0) {
-        setPortfolio(parsed);
+    async function fetchPortfolio() {
+      const { data, error } = await supabase
+        .from("portfolio")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        console.error("Error fetching portfolio:", error.message);
+        setPortfolio([]);
+      } else if (data && data.length > 0) {
+        setPortfolio(data);
       } else {
-        setPortfolio(defaultPortfolio);
+        setPortfolio([]);
       }
-    } else {
-      setPortfolio(defaultPortfolio);
     }
+    fetchPortfolio();
   }, []);
 
   const handleViewProject = (item: PortfolioItem) => {

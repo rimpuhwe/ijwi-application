@@ -1,4 +1,5 @@
 "use client";
+import { supabase } from "@/lib/supabaseClient";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -79,37 +80,63 @@ export default function PortfolioPage() {
   const [workToDelete, setWorkToDelete] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("portfolio");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.length > 0) {
-        setWorks(parsed);
+    async function fetchPortfolio() {
+      const { data, error } = await supabase
+        .from("portfolio")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        console.error("Error fetching portfolio:", error.message);
+        setWorks([]);
+      } else if (data && data.length > 0) {
+        setWorks(data);
       } else {
-        localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio));
-        setWorks(defaultPortfolio);
+        setWorks([]);
       }
-    } else {
-      localStorage.setItem("portfolio", JSON.stringify(defaultPortfolio));
-      setWorks(defaultPortfolio);
     }
+    fetchPortfolio();
   }, []);
 
   const saveToLocalStorage = (data: PortfolioWork[]) => {
-    localStorage.setItem("portfolio", JSON.stringify(data));
+    // Removed: localStorage logic
+    // Use Supabase for all CRUD
     setWorks(data);
   };
 
   const handleSave = (work: Omit<PortfolioWork, "id"> | PortfolioWork) => {
-    let updated: PortfolioWork[];
-    if ("id" in work) {
-      // Update
-      updated = works.map((w) => (w.id === work.id ? { ...work } : w));
-    } else {
-      // Create
-      updated = [...works, { ...work, id: Date.now().toString() }];
+    async function saveWork() {
+      if ("id" in work) {
+        // Update
+        const { error } = await supabase
+          .from("portfolio")
+          .update({ ...work })
+          .eq("id", work.id);
+        if (error)
+          console.error("Error updating portfolio work:", error.message);
+      } else {
+        // Create
+        const { data: userData, error: userError } =
+          await supabase.auth.getUser();
+        if (userError || !userData?.user) {
+          alert("You must be logged in to create a portfolio item.");
+          return;
+        }
+        const user_id = userData.user.id;
+        const { error } = await supabase
+          .from("portfolio")
+          .insert([{ ...work, user_id }]);
+        if (error)
+          console.error("Error creating portfolio work:", error.message);
+      }
+      // Refetch after save
+      const { data } = await supabase
+        .from("portfolio")
+        .select("*")
+        .order("id", { ascending: true });
+      setWorks(data || []);
+      setSelectedWork(null);
     }
-    saveToLocalStorage(updated);
-    setSelectedWork(null);
+    saveWork();
   };
 
   const handleEdit = (work: PortfolioWork) => {
@@ -118,10 +145,19 @@ export default function PortfolioPage() {
   };
 
   const handleDelete = (id: string) => {
-    const updated = works.filter((w) => w.id !== id);
-    saveToLocalStorage(updated);
-    setDeleteDialogOpen(false);
-    setWorkToDelete(null);
+    async function deleteWork() {
+      const { error } = await supabase.from("portfolio").delete().eq("id", id);
+      if (error) console.error("Error deleting portfolio work:", error.message);
+      // Refetch after delete
+      const { data } = await supabase
+        .from("portfolio")
+        .select("*")
+        .order("id", { ascending: true });
+      setWorks(data || []);
+      setDeleteDialogOpen(false);
+      setWorkToDelete(null);
+    }
+    deleteWork();
   };
 
   const handleDeleteClick = (id: string) => {
@@ -131,12 +167,10 @@ export default function PortfolioPage() {
 
   const handleDeleteConfirm = () => {
     if (workToDelete) {
-      const updated = works.filter((w) => w.id !== workToDelete);
-      localStorage.setItem("portfolio", JSON.stringify(updated));
-      setWorks(updated);
-      setWorkToDelete(null);
+      handleDelete(workToDelete);
+    } else {
+      setDeleteDialogOpen(false);
     }
-    setDeleteDialogOpen(false);
   };
 
   const handleAddNew = () => {

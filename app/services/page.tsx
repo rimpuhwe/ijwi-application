@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Mic, Video, Lightbulb, Music, Camera, Headphones } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
 interface Service {
   id: string;
@@ -82,22 +83,26 @@ const defaultServices = [
 ];
 
 export default function ServicesPage() {
-  const [services, setServices] = useState<Service[]>(defaultServices);
+  const [services, setServices] = useState<Service[]>([]);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("services");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.length > 0) {
-        setServices(parsed);
+    async function fetchServices() {
+      const { data, error } = await supabase
+        .from("services")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        console.error("Error fetching services:", error.message);
+        setServices([]);
+      } else if (data && data.length > 0) {
+        setServices(data);
       } else {
-        setServices(defaultServices);
+        setServices([]);
       }
-    } else {
-      setServices(defaultServices);
     }
+    fetchServices();
   }, []);
 
   const handleLearnMore = (service: Service) => {
