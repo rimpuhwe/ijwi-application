@@ -1,24 +1,35 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-  const session = request.cookies.get("admin_session")
-  const isLoggedIn = session?.value === "authenticated"
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
-  // Redirect to login if accessing admin routes without auth
-  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login") && !isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/login", request.url))
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+  const isLoginPage = req.nextUrl.pathname === "/admin/login";
+
+  // Not signed in → redirect to login
+  if (isAdminRoute && !session && !isLoginPage) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = "/admin/login";
+    return NextResponse.redirect(redirectUrl);
   }
 
-  // Redirect to dashboard if already logged in and trying to access login
-  if (pathname.startsWith("/admin/login") && isLoggedIn) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url))
+  // Signed in → block login page
+  if (isLoginPage && session) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = "/admin/dashboard";
+    return NextResponse.redirect(redirectUrl);
   }
 
-  return NextResponse.next()
+  return res;
 }
 
 export const config = {
   matcher: ["/admin/:path*"],
-}
+};
