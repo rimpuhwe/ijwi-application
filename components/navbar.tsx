@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Logo from "../public/ijwi logo.png"
 
 export function Navbar() {
   const pathname = usePathname();
@@ -33,7 +34,7 @@ export function Navbar() {
             href="/"
             className="text-xl font-bold text-[#F3F4F6] hover:text-[#F97316] transition-colors"
           >
-            IJWI Hub
+            <img src={Logo.src} alt="ijwi-hub-logo" className="h-20 w-20" />
           </Link>
 
           {/* Desktop Navigation */}
