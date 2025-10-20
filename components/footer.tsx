@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { Instagram, Youtube, Linkedin, Twitter } from "lucide-react"
+import Link from "next/link";
+import { Instagram, Youtube, Linkedin, Twitter } from "lucide-react";
 
 export function Footer() {
   return (
@@ -19,22 +19,34 @@ export function Footer() {
             <h4 className="text-[#F3F4F6] font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors">
+                <Link
+                  href="/"
+                  className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors">
+                <Link
+                  href="/about"
+                  className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors">
+                <Link
+                  href="/services"
+                  className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors"
+                >
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors">
+                <Link
+                  href="/portfolio"
+                  className="text-[#9CA3AF] hover:text-[#F97316] text-sm transition-colors"
+                >
                   Our Work
                 </Link>
               </li>
@@ -55,16 +67,32 @@ export function Footer() {
           <div>
             <h4 className="text-[#F3F4F6] font-semibold mb-4">Follow Us</h4>
             <div className="flex gap-4">
-              <a href="https://www.instagram.com/ijwihub?utm_source=qr&igsh=NWIwMTduN3QyMXhu" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a
+                href="https://www.instagram.com/ijwihub?utm_source=qr&igsh=NWIwMTduN3QyMXhu"
+                target="_blank"
+                className="text-[#9CA3AF] hover:text-[#F97316] transition-colors"
+              >
                 <Instagram size={20} />
               </a>
-              <a href="#" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a
+                href="#"
+                target="_blank"
+                className="text-[#9CA3AF] hover:text-[#F97316] transition-colors"
+              >
                 <Youtube size={20} />
               </a>
-              <a href="#" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a
+                href="#"
+                target="_blank"
+                className="text-[#9CA3AF] hover:text-[#F97316] transition-colors"
+              >
                 <Linkedin size={20} />
               </a>
-              <a href="https://x.com/IjwiHub?t=Ur_lctseTpRwY7XIYnsezw&s=09" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a
+                href="https://x.com/IjwiHub?t=Ur_lctseTpRwY7XIYnsezw&s=09"
+                target="_blank"
+                className="text-[#9CA3AF] hover:text-[#F97316] transition-colors"
+              >
                 <Twitter size={20} />
               </a>
             </div>
@@ -72,9 +100,11 @@ export function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-[#27272A] text-center text-sm text-[#9CA3AF]">
-          <p>&copy; {new Date().getFullYear()} IJWI Hub. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} IJWI Hub. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
