@@ -50,7 +50,7 @@ export default function DashboardPage() {
             <button
               onClick={async () => {
                 await supabase.auth.signOut();
-                window.location.href = '/admin/login';
+                window.location.href = "/admin/login";
               }}
               className="bg-[#EF4444] text-white px-3 py-1 rounded"
             >
