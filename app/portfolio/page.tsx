@@ -149,7 +149,7 @@ export default function PortfolioPage() {
                     {item.description}
                   </p>
                   <p className="text-[#C5A36C] text-sm">
-                    Client: {item.clientName}
+                    Director:  {item.clientName}
                   </p>
                 </CardContent>
               </Card>

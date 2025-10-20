@@ -2,11 +2,17 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, FolderOpen, TrendingUp } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../../../lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [serviceCount, setServiceCount] = useState(0);
   const [portfolioCount, setPortfolioCount] = useState(0);
+
+  useEffect(() => {
+    // auth removed: dashboard is now accessible without client-side redirect
+  }, [router]);
 
   useEffect(() => {
     async function fetchCounts() {
@@ -38,7 +44,20 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[#F3F4F6]">Dashboard</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold text-[#F3F4F6]">Dashboard</h1>
+          <div>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                window.location.href = '/admin/login';
+              }}
+              className="bg-[#EF4444] text-white px-3 py-1 rounded"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
         <p className="text-[#9CA3AF] mt-2">
           Welcome to IJWI Hub Admin Dashboard
         </p>

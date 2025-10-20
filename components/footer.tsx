@@ -58,13 +58,13 @@ export function Footer() {
               <a href="https://www.instagram.com/ijwihub?utm_source=qr&igsh=NWIwMTduN3QyMXhu" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a href="#" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
                 <Youtube size={20} />
               </a>
-              <a href="#" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a href="#" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
+              <a href="https://x.com/IjwiHub?t=Ur_lctseTpRwY7XIYnsezw&s=09" target="_blank" className="text-[#9CA3AF] hover:text-[#F97316] transition-colors">
                 <Twitter size={20} />
               </a>
             </div>

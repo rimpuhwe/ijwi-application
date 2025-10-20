@@ -142,7 +142,7 @@ export function PortfolioDialog({
             </div>
             <div className="space-y-2">
               <Label htmlFor="clientName" className="text-[#F3F4F6]">
-                Client Name
+                Director
               </Label>
               <Input
                 id="clientName"

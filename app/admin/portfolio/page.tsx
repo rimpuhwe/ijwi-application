@@ -260,7 +260,7 @@ export default function PortfolioPage() {
                   {work.description}
                 </p>
                 <p className="text-[#C5A36C] text-xs mt-2">
-                  Client: {work.clientName}
+                  Director: {work.clientName}
                 </p>
               </CardContent>
             </Card>

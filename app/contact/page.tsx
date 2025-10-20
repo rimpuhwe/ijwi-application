@@ -176,18 +176,21 @@ export default function ContactPage() {
                     </a>
                     <a
                       href="#"
+                      target="_blank"
                       className="w-12 h-12 bg-[#0E0E0E] border border-[#27272A] rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#F97316] hover:border-[#F97316] transition-colors"
                     >
                       <Youtube size={20} />
                     </a>
                     <a
                       href="#"
+                      target="_blank"
                       className="w-12 h-12 bg-[#0E0E0E] border border-[#27272A] rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#F97316] hover:border-[#F97316] transition-colors"
                     >
                       <Linkedin size={20} />
                     </a>
                     <a
-                      href="#"
+                      href="https://x.com/IjwiHub?t=Ur_lctseTpRwY7XIYnsezw&s=09"
+                      target="_blank"
                       className="w-12 h-12 bg-[#0E0E0E] border border-[#27272A] rounded-lg flex items-center justify-center text-[#9CA3AF] hover:text-[#F97316] hover:border-[#F97316] transition-colors"
                     >
                       <Twitter size={20} />
