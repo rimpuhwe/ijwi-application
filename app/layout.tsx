@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
-          <main className="pt-16 min-h-screen">{children}</main>
+          <main className="min-h-screen">{children}</main>
           <Footer />
         </Suspense>
         <Analytics />

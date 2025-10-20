@@ -10,6 +10,12 @@ export function Navbar() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Hide the global navbar for any admin routes
+  if (pathname?.startsWith('/admin')) return null
+
+  // Spacer to offset the fixed navbar height so page content doesn't sit under it
+  const Spacer = () => <div className="h-16" aria-hidden />
+
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/services", label: "Services" },

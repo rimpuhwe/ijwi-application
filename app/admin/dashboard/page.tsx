@@ -43,25 +43,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-[#F3F4F6]">Dashboard</h1>
-          <div>
-            <button
-              onClick={async () => {
-                await supabase.auth.signOut();
-                window.location.href = "/admin/login";
-              }}
-              className="bg-[#EF4444] text-white px-3 py-1 rounded"
-            >
-              Sign out
-            </button>
-          </div>
-        </div>
-        <p className="text-[#9CA3AF] mt-2">
-          Welcome to IJWI Hub Admin Dashboard
-        </p>
-      </div>
+      {/* Header removed: dashboard will render cards only */}
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-[#1A1A1A] border-[#27272A]">
