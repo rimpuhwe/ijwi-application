@@ -18,7 +18,6 @@ interface Service {
   title: string;
   description: string;
   icon: string;
-  price: string;
 }
 
 const iconMap: Record<string, any> = {
@@ -29,58 +28,6 @@ const iconMap: Record<string, any> = {
   camera: Camera,
   headphones: Headphones,
 };
-
-// Default services to display
-const defaultServices = [
-  {
-    id: "1",
-    title: "Audio Production",
-    description:
-      "Professional recording, mixing, and mastering services for music, podcasts, and voiceovers",
-    icon: "mic",
-    price: "Starting at $500",
-  },
-  {
-    id: "2",
-    title: "Video Production",
-    description:
-      "Cinematic storytelling through high-quality video production, editing, and color grading",
-    icon: "video",
-    price: "Starting at $1,000",
-  },
-  {
-    id: "3",
-    title: "Sound Design",
-    description:
-      "Custom sound effects, foley, and audio post-production for film and media",
-    icon: "headphones",
-    price: "Starting at $750",
-  },
-  {
-    id: "4",
-    title: "Music Production",
-    description:
-      "Original composition, arrangement, and production for various media projects",
-    icon: "music",
-    price: "Starting at $800",
-  },
-  {
-    id: "5",
-    title: "Cinematography",
-    description:
-      "Professional camera work and lighting for commercials, documentaries, and films",
-    icon: "camera",
-    price: "Starting at $1,200",
-  },
-  {
-    id: "6",
-    title: "Creative Consulting",
-    description:
-      "Strategic guidance for your creative projects, brand storytelling, and content planning",
-    icon: "lightbulb",
-    price: "Starting at $300",
-  },
-];
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -146,9 +93,6 @@ export default function ServicesPage() {
                     <p className="text-[#9CA3AF] mb-4 leading-relaxed">
                       {service.description}
                     </p>
-                    <p className="text-[#C5A36C] font-semibold mb-4">
-                      {service.price}
-                    </p>
                     <Button
                       onClick={() => handleLearnMore(service)}
                       className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white"
@@ -191,12 +135,6 @@ export default function ServicesPage() {
                   Fast turnaround times
                 </li>
               </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-[#F3F4F6] mb-2">Pricing</h4>
-              <p className="text-[#C5A36C] text-lg font-semibold">
-                {selectedService?.price}
-              </p>
             </div>
             <Button className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white">
               Get Started

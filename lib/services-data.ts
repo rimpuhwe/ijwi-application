@@ -3,7 +3,6 @@ export interface Service {
   title: string
   description: string
   icon: string
-  price: string
 }
 
 // In-memory storage for services (in production, use a database)

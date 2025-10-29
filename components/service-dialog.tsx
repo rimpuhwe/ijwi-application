@@ -28,7 +28,6 @@ export function ServiceDialog({ open, onOpenChange, service, onSave }: ServiceDi
     title: "",
     description: "",
     icon: "",
-    price: "",
   })
 
   useEffect(() => {
@@ -37,14 +36,13 @@ export function ServiceDialog({ open, onOpenChange, service, onSave }: ServiceDi
         title: service.title,
         description: service.description,
         icon: service.icon,
-        price: service.price,
       })
     } else {
       setFormData({
         title: "",
         description: "",
         icon: "",
-        price: "",
+      
       })
     }
   }, [service, open])
@@ -106,18 +104,7 @@ export function ServiceDialog({ open, onOpenChange, service, onSave }: ServiceDi
                 className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="price" className="text-[#F3F4F6]">
-                Price
-              </Label>
-              <Input
-                id="price"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                required
-                className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
-              />
-            </div>
+            {/* Price field removed as requested */}
           </div>
           <DialogFooter>
             <Button

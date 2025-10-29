@@ -28,56 +28,6 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function ServicesPage() {
-  const defaultServices = [
-    {
-      id: "1",
-      title: "Audio Production",
-      description:
-        "Professional recording, mixing, and mastering services for music, podcasts, and voiceovers",
-      icon: "mic",
-      price: "Starting at $500",
-    },
-    {
-      id: "2",
-      title: "Video Production",
-      description:
-        "Cinematic storytelling through high-quality video production, editing, and color grading",
-      icon: "video",
-      price: "Starting at $1,000",
-    },
-    {
-      id: "3",
-      title: "Sound Design",
-      description:
-        "Custom sound effects, foley, and audio post-production for film and media",
-      icon: "headphones",
-      price: "Starting at $750",
-    },
-    {
-      id: "4",
-      title: "Music Production",
-      description:
-        "Original composition, arrangement, and production for various media projects",
-      icon: "music",
-      price: "Starting at $800",
-    },
-    {
-      id: "5",
-      title: "Cinematography",
-      description:
-        "Professional camera work and lighting for commercials, documentaries, and films",
-      icon: "camera",
-      price: "Starting at $1,200",
-    },
-    {
-      id: "6",
-      title: "Creative Consulting",
-      description:
-        "Strategic guidance for your creative projects, brand storytelling, and content planning",
-      icon: "lightbulb",
-      price: "Starting at $300",
-    },
-  ];
   const iconMap: Record<string, any> = {
     mic: Mic,
     video: Video,
@@ -242,9 +192,7 @@ export default function ServicesPage() {
                   <p className="text-[#9CA3AF] mb-4 leading-relaxed">
                     {service.description}
                   </p>
-                  <p className="text-[#C5A36C] font-semibold mb-4">
-                    {service.price}
-                  </p>
+                
                   <div className="flex gap-2 mt-4">
                     <Button
                       variant="ghost"
