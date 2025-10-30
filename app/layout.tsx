@@ -5,6 +5,8 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import IntroSection from "@/components/IntroSection";
+import MainContent from "@/components/MainContent";
 import { Suspense } from "react";
 import "./globals.css";
 
@@ -26,9 +28,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}
       >
+        {/* IntroSection overlays the site on first load with a cinematic intro. */}
+        <IntroSection />
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
-          <main className="min-h-screen">{children}</main>
+          <MainContent>{children}</MainContent>
           <Footer />
         </Suspense>
         <Analytics />
