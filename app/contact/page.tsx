@@ -18,27 +18,32 @@ export default function ContactPage() {
   })
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus("loading")
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const response = await fetch("https://formspree.io/f/xldondlo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      }),
+    });
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        setStatus("success")
-        setFormData({ name: "", email: "", subject: "", message: "" })
-      } else {
-        setStatus("error")
-      }
-    } catch (error) {
-      setStatus("error")
+    if (response.ok) {
+      alert("Message sent successfully!");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } else {
+      alert("Failed to send message.");
     }
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred.");
   }
+};
+
 
   return (
     <div className="bg-[#0E0E0E] min-h-screen">
@@ -63,7 +68,7 @@ export default function ContactPage() {
               <CardContent className="p-6 text-center">
                 <Mail className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
                 <h3 className="text-[#F3F4F6] font-semibold mb-2">Email</h3>
-                <p className="text-[#9CA3AF]">info@ijwihub.com</p>
+                <p className="text-[#9CA3AF]">Info@ijwihub.com</p>
               </CardContent>
             </Card>
             <Card className="bg-[#1A1A1A] border-[#27272A]">
@@ -88,13 +93,17 @@ export default function ContactPage() {
             <Card className="bg-[#1A1A1A] border-[#27272A]">
               <CardContent className="p-8">
                 <h2 className="text-2xl font-bold text-[#F3F4F6] mb-6">Send Us a Message</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form 
+                action="https://formspree.io/f/xldondlo"
+                method="POST"
+                onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <Input
                       placeholder="Your Name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
+                      name="your name"
                       className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6] placeholder:text-[#9CA3AF]"
                     />
                   </div>
@@ -105,6 +114,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
+                      name="email"
                       className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6] placeholder:text-[#9CA3AF]"
                     />
                   </div>
@@ -114,6 +124,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       required
+                      name="subject"
                       className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6] placeholder:text-[#9CA3AF]"
                     />
                   </div>
@@ -124,6 +135,7 @@ export default function ContactPage() {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
                       rows={6}
+                      name="message"
                       className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6] placeholder:text-[#9CA3AF]"
                     />
                   </div>

@@ -57,7 +57,7 @@ export function Footer() {
           <div>
             <h4 className="text-[#F3F4F6] font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-[#9CA3AF]">
-              <li>Email: info@ijwihub.com</li>
+              <li>Email: Info@ijwihub.com</li>
               <li>Phone: +250 788 544 839</li>
               <li>Kigali, Rwanda</li>
             </ul>
