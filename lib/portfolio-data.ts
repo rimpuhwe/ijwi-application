@@ -5,6 +5,8 @@ export interface PortfolioWork {
   imageUrl: string;
   category: string;
   clientName: string;
+  // Optional trailer URL (mp4 or streaming link)
+  trailerUrl?: string | null;
 }
 
 // In-memory storage for portfolio works (in production, use a database)
