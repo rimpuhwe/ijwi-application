@@ -7,9 +7,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PortfolioItem {
   id: string;
@@ -17,6 +19,8 @@ interface PortfolioItem {
   description: string;
   category: string;
   imageUrl: string;
+  // optional trailer video url (mp4 or streaming)
+  trailerUrl?: string | null;
   clientName: string;
 }
 
@@ -76,24 +80,34 @@ const defaultPortfolio: PortfolioItem[] = [
 
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     async function fetchPortfolio() {
-      const { data, error } = await supabase
-        .from("portfolio")
-        .select("*")
-        .order("id", { ascending: true });
-      if (error) {
-        console.error("Error fetching portfolio:", error.message);
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("portfolio")
+          .select("*")
+          .order("id", { ascending: true });
+        if (error) {
+          console.error("Error fetching portfolio:", error.message);
+          setPortfolio([]);
+        } else if (data && data.length > 0) {
+          setPortfolio(data);
+        } else {
+          setPortfolio([]);
+        }
+      } catch (err) {
+        console.error("Unexpected error fetching portfolio:", err);
         setPortfolio([]);
-      } else if (data && data.length > 0) {
-        setPortfolio(data);
-      } else {
-        setPortfolio([]);
+      } finally {
+        setLoading(false);
       }
     }
+
     fetchPortfolio();
   }, []);
 
@@ -121,71 +135,101 @@ export default function PortfolioPage() {
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {portfolio.map((item) => (
-              <Card
-                key={item.id}
-                className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors cursor-pointer overflow-hidden group"
-                onClick={() => handleViewProject(item)}
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={item.imageUrl || "/placeholder.svg"}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E0E] to-transparent opacity-60"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-2">
-                      {item.category}
-                    </span>
-                  </div>
+            {loading ? (
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Spinner className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
+                  <div className="text-[#9CA3AF]">Loading projects…</div>
                 </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-[#9CA3AF] text-sm leading-relaxed mb-2">
-                    {item.description}
-                  </p>
-                  <p className="text-[#C5A36C] text-sm">
-                    Director:  {item.clientName}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+              </div>
+            ) : portfolio.length === 0 ? (
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-[#9CA3AF] py-12">
+                No projects to show.
+              </div>
+            ) : (
+              portfolio.map((item) => (
+                <Card
+                  key={item.id}
+                  className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors cursor-pointer overflow-hidden group"
+                  onClick={() => handleViewProject(item)}
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={item.imageUrl || "/placeholder.svg"}
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E0E] to-transparent opacity-60"></div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-2">
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-[#9CA3AF] text-sm leading-relaxed mb-2">
+                      {item.description}
+                    </p>
+                    <p className="text-[#C5A36C] text-sm">
+                      Director: {item.clientName}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </section>
 
       {/* Project Detail Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-3xl">
+        <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-[1200px] w-[90vw] sm:max-w-[1100px]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-[#F3F4F6]">
               {selectedItem?.title}
             </DialogTitle>
           </DialogHeader>
           {selectedItem && (
-            <div className="space-y-4">
-              <div className="relative h-80 rounded-lg overflow-hidden">
-                <Image
-                  src={selectedItem.imageUrl || "/placeholder.svg"}
-                  alt={selectedItem.title}
-                  fill
-                  className="object-cover"
-                />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-4 md:col-span-2">
+                {/* Trailer / Media column */}
+                {selectedItem.trailerUrl ? (
+                  <video
+                    controls
+                    src={selectedItem.trailerUrl}
+                    poster={selectedItem.imageUrl || undefined}
+                    className="w-full h-[28rem] rounded-lg bg-black object-cover"
+                  />
+                ) : (
+                  <div className="relative h-[28rem] rounded-lg overflow-hidden bg-[#0E0E0E]">
+                    <Image
+                      src={selectedItem.imageUrl || "/placeholder.svg"}
+                      alt={selectedItem.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
               </div>
-              <div>
+
+              <div className="space-y-4">
+                {/* Description / Meta column */}
                 <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-4">
                   {selectedItem.category}
                 </span>
+                <h3 className="text-xl font-semibold text-[#F3F4F6]">
+                  {selectedItem.title}
+                </h3>
                 <p className="text-[#9CA3AF] leading-relaxed mb-4">
                   {selectedItem.description}
                 </p>
                 <div className="border-t border-[#27272A] pt-4">
                   <p className="text-[#C5A36C]">
-                    <span className="font-semibold">Client:</span>{" "}
+                    <span className="font-semibold">Director:</span>{" "}
                     {selectedItem.clientName}
                   </p>
                 </div>
