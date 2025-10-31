@@ -35,6 +35,7 @@ export function PortfolioDialog({
     imageUrl: "",
     category: "",
     clientName: "",
+    trailerUrl: "",
   });
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export function PortfolioDialog({
         imageUrl: work.imageUrl,
         category: work.category,
         clientName: work.clientName || "",
+        trailerUrl: (work as any).trailerUrl || (work as any).trailler || "",
       });
     } else {
       setFormData({
@@ -53,6 +55,7 @@ export function PortfolioDialog({
         imageUrl: "",
         category: "",
         clientName: "",
+        trailerUrl: "",
       });
     }
   }, [work, open]);
@@ -122,6 +125,20 @@ export function PortfolioDialog({
                 }
                 required
                 placeholder="https://example.com/image.jpg"
+                className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="trailerUrl" className="text-[#F3F4F6]">
+                Trailer URL
+              </Label>
+              <Input
+                id="trailerUrl"
+                value={formData.trailerUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, trailerUrl: e.target.value })
+                }
+                placeholder="https://cdn.example.com/trailer.mp4 or streaming URL"
                 className="bg-[#0E0E0E] border-[#27272A] text-[#F3F4F6]"
               />
             </div>
