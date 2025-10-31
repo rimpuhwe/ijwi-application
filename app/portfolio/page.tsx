@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Spinner } from "@/components/ui/spinner";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PortfolioItem {
   id: string;
@@ -19,71 +19,34 @@ interface PortfolioItem {
   description: string;
   category: string;
   imageUrl: string;
-  // optional trailer video url (mp4 or streaming)
   trailerUrl?: string | null;
   clientName: string;
 }
 
-// Default portfolio items
-const defaultPortfolio: PortfolioItem[] = [
-  {
-    id: "1",
-    title: "Brand Documentary",
-    description:
-      "A cinematic documentary showcasing the journey of a local business",
-    category: "Video Production",
-    imageUrl: "/cinematic-documentary-film-production.jpg",
-    clientName: "Local Business Co.",
-  },
-  {
-    id: "2",
-    title: "Music Album Production",
-    description:
-      "Full album recording, mixing, and mastering for emerging artist",
-    category: "Audio Production",
-    imageUrl: "/music-studio-recording-session.jpg",
-    clientName: "Rising Star Artist",
-  },
-  {
-    id: "3",
-    title: "Commercial Campaign",
-    description: "Multi-platform commercial campaign with stunning visuals",
-    category: "Video Production",
-    imageUrl: "/commercial-video-production-set.jpg",
-    clientName: "Tech Startup",
-  },
-  {
-    id: "4",
-    title: "Podcast Series",
-    description: "Professional podcast recording and post-production",
-    category: "Audio Production",
-    imageUrl: "/podcast-recording-studio-setup.jpg",
-    clientName: "Media Company",
-  },
-  {
-    id: "5",
-    title: "Event Coverage",
-    description: "Comprehensive video and audio coverage of corporate event",
-    category: "Video Production",
-    imageUrl: "/event-videography-coverage.jpg",
-    clientName: "Corporate Client",
-  },
-  {
-    id: "6",
-    title: "Sound Design Project",
-    description: "Custom sound design and audio branding for digital platform",
-    category: "Sound Design",
-    imageUrl: "/sound-design-audio-mixing.jpg",
-    clientName: "Digital Platform",
-  },
-];
-
 export default function PortfolioPage() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showControls, setShowControls] = useState(false);
 
+  // Autoplay logic
+  useEffect(() => {
+    if (dialogOpen && selectedItem?.trailerUrl && videoRef.current) {
+      const video = videoRef.current;
+      video.muted = true;
+      video.play().catch((err) => {
+        console.warn("Autoplay blocked:", err);
+      });
+
+      const controlsTimer = setTimeout(() => setShowControls(true), 2000);
+      return () => clearTimeout(controlsTimer);
+    }
+  }, [dialogOpen, selectedItem]);
+
+  // Fetch portfolio
   useEffect(() => {
     async function fetchPortfolio() {
       setLoading(true);
@@ -92,16 +55,16 @@ export default function PortfolioPage() {
           .from("portfolio")
           .select("*")
           .order("id", { ascending: true });
-        if (error) {
-          console.error("Error fetching portfolio:", error.message);
-          setPortfolio([]);
-        } else if (data && data.length > 0) {
-          setPortfolio(data);
-        } else {
-          setPortfolio([]);
-        }
-      } catch (err) {
-        console.error("Unexpected error fetching portfolio:", err);
+
+        if (error) throw error;
+
+        const normalized = (data ?? []).map((item: any) => ({
+          ...item,
+          trailerUrl: item.trailerUrl ?? item.trailler ?? null,
+        }));
+        setPortfolio(normalized);
+      } catch (err: any) {
+        console.error("Error fetching portfolio:", err.message);
         setPortfolio([]);
       } finally {
         setLoading(false);
@@ -119,125 +82,140 @@ export default function PortfolioPage() {
   return (
     <div className="bg-[#0E0E0E] min-h-screen">
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-[#F3F4F6] mb-6 text-balance">
-            Our <span className="text-[#F97316]">Work</span>
-          </h1>
-          <p className="text-lg text-[#9CA3AF] leading-relaxed text-pretty">
-            Explore our portfolio of creative projects showcasing our expertise
-            in audio and video production, storytelling, and sound design.
-          </p>
-        </div>
+      <section className="py-20 px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold text-[#F3F4F6] mb-6">
+          Our <span className="text-[#F97316]">Work</span>
+        </h1>
+        <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto">
+          Explore our cinematic productions — crafted with creativity, precision, and storytelling mastery.
+        </p>
       </section>
 
       {/* Portfolio Grid */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loading ? (
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 flex items-center justify-center py-12">
-                <div className="text-center">
-                  <Spinner className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
-                  <div className="text-[#9CA3AF]">Loading projects…</div>
-                </div>
-              </div>
-            ) : portfolio.length === 0 ? (
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-[#9CA3AF] py-12">
-                No projects to show.
-              </div>
-            ) : (
-              portfolio.map((item) => (
-                <Card
-                  key={item.id}
-                  className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors cursor-pointer overflow-hidden group"
-                  onClick={() => handleViewProject(item)}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+              <Spinner className="w-10 h-10 text-[#F97316] mb-4" />
+              <p className="text-[#9CA3AF]">Loading projects…</p>
+            </div>
+          ) : portfolio.length === 0 ? (
+            <div className="col-span-full text-center text-[#9CA3AF] py-12">
+              No projects to show.
+            </div>
+          ) : (
+            portfolio.map((item) => (
+              <Card
+                key={item.id}
+                className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-all cursor-pointer overflow-hidden group"
+                onClick={() => handleViewProject(item)}
+              >
+                <motion.div
+                  className="relative h-64 overflow-hidden"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <div className="relative h-64 overflow-hidden">
-                    <Image
-                      src={item.imageUrl || "/placeholder.svg"}
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E0E] to-transparent opacity-60"></div>
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-2">
-                        {item.category}
-                      </span>
-                    </div>
+                  <Image
+                    src={item.imageUrl || "/placeholder.svg"}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0E0E0E] to-transparent opacity-70" />
+                  <div className="absolute bottom-4 left-4">
+                    <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full">
+                      {item.category}
+                    </span>
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
-                      {item.title}
-                    </h3>
-                    <p className="text-[#9CA3AF] text-sm leading-relaxed mb-2">
-                      {item.description}
-                    </p>
-                    <p className="text-[#C5A36C] text-sm">
-                      Director: {item.clientName}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+                </motion.div>
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">{item.title}</h3>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed">{item.description}</p>
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
       </section>
 
-      {/* Project Detail Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-[1200px] w-[90vw] sm:max-w-[1100px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl text-[#F3F4F6]">
-              {selectedItem?.title}
-            </DialogTitle>
-          </DialogHeader>
-          {selectedItem && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-4 md:col-span-2">
-                {/* Trailer / Media column */}
-                {selectedItem.trailerUrl ? (
-                  <video
-                    controls
-                    src={selectedItem.trailerUrl}
-                    poster={selectedItem.imageUrl || undefined}
-                    className="w-full h-[28rem] rounded-lg bg-black object-cover"
-                  />
-                ) : (
-                  <div className="relative h-[28rem] rounded-lg overflow-hidden bg-[#0E0E0E]">
-                    <Image
-                      src={selectedItem.imageUrl || "/placeholder.svg"}
-                      alt={selectedItem.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-              </div>
+      {/* Dialog */}
+      <AnimatePresence>
+        {dialogOpen && selectedItem && (
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-[1200px] w-[90vw] sm:max-w-[1100px]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedItem.title}</DialogTitle>
+              </DialogHeader>
 
-              <div className="space-y-4">
-                {/* Description / Meta column */}
-                <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full mb-4">
-                  {selectedItem.category}
-                </span>
-                <h3 className="text-xl font-semibold text-[#F3F4F6]">
-                  {selectedItem.title}
-                </h3>
-                <p className="text-[#9CA3AF] leading-relaxed mb-4">
-                  {selectedItem.description}
-                </p>
-                <div className="border-t border-[#27272A] pt-4">
-                  <p className="text-[#C5A36C]">
-                    <span className="font-semibold">Director:</span>{" "}
-                    {selectedItem.clientName}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 40 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              >
+                <div className="md:col-span-2 relative">
+                  {selectedItem.trailerUrl ? (
+                    <motion.video
+                      ref={videoRef}
+                      key={selectedItem.id}
+                      muted={isMuted}
+                      loop
+                      playsInline
+                      autoPlay
+                      preload="metadata"
+                      src={selectedItem.trailerUrl}
+                      poster={selectedItem.imageUrl || undefined}
+                      className="w-full h-[28rem] rounded-lg bg-black object-cover"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.8 }}
+                    />
+                  ) : (
+                    <div className="h-[28rem] bg-[#0E0E0E] rounded-lg flex items-center justify-center text-[#9CA3AF]">
+                      No trailer available
+                    </div>
+                  )}
+
+                  {/* Unmute Button */}
+                  {isMuted && (
+                    <motion.button
+                      onClick={async () => {
+                        setIsMuted(false);
+                        if (videoRef.current) {
+                          try {
+                            videoRef.current.muted = false;
+                            await videoRef.current.play();
+                          } catch (err) {
+                            console.warn("Play after unmute prevented:", err);
+                          }
+                        }
+                      }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="absolute inset-0 flex items-center justify-center bg-black/60 text-white px-4 py-2 rounded-md backdrop-blur-sm"
+                    >
+                      Unmute
+                    </motion.button>
+                  )}
+                </div>
+
+                <div>
+                  <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full">
+                    {selectedItem.category}
+                  </span>
+                  <h3 className="text-xl font-semibold text-[#F3F4F6] mt-4">{selectedItem.title}</h3>
+                  <p className="text-[#9CA3AF] mt-2 leading-relaxed">{selectedItem.description}</p>
+                  <p className="text-[#C5A36C] mt-4">
+                    <span className="font-semibold">Director:</span> {selectedItem.clientName}
                   </p>
                 </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+              </motion.div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
