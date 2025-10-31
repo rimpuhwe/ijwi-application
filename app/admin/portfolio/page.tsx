@@ -89,7 +89,12 @@ export default function PortfolioPage() {
         console.error("Error fetching portfolio:", error.message);
         setWorks([]);
       } else if (data && data.length > 0) {
-        setWorks(data);
+        // Normalize trailer field name: support either 'trailerUrl' or the DB column 'trailler'
+        const normalized = data.map((item: any) => ({
+          ...item,
+          trailerUrl: item.trailerUrl ?? item.trailler ?? null,
+        }));
+        setWorks(normalized);
       } else {
         setWorks([]);
       }
@@ -107,9 +112,17 @@ export default function PortfolioPage() {
     async function saveWork() {
       if ("id" in work) {
         // Update
+        // map trailerUrl to both possible column names for compatibility
+        // Build payload for Supabase: only include the DB column `trailler`.
+        const payload: any = { ...work };
+        if ((work as any).trailerUrl) {
+          payload.trailler = (work as any).trailerUrl; // map client field to DB column
+          // Remove the client-side key so Supabase doesn't attempt to write `trailerUrl`
+          delete payload.trailerUrl;
+        }
         const { error } = await supabase
           .from("portfolio")
-          .update({ ...work })
+          .update(payload)
           .eq("id", work.id);
         if (error)
           console.error("Error updating portfolio work:", error.message);
@@ -122,9 +135,13 @@ export default function PortfolioPage() {
           return;
         }
         const user_id = userData.user.id;
-        const { error } = await supabase
-          .from("portfolio")
-          .insert([{ ...work, user_id }]);
+        // For inserts, map client `trailerUrl` -> DB `trailler` and avoid sending `trailerUrl` key
+        const payload: any = { ...work, user_id };
+        if ((work as any).trailerUrl) {
+          payload.trailler = (work as any).trailerUrl;
+          delete payload.trailerUrl;
+        }
+        const { error } = await supabase.from("portfolio").insert([payload]);
         if (error)
           console.error("Error creating portfolio work:", error.message);
       }
