@@ -36,13 +36,36 @@ export default function PortfolioPage() {
   useEffect(() => {
     if (dialogOpen && selectedItem?.trailerUrl && videoRef.current) {
       const video = videoRef.current;
+      // Ensure muted autoplay attempt (most browsers allow muted autoplay)
       video.muted = true;
-      video.play().catch((err) => {
-        console.warn("Autoplay blocked:", err);
-      });
+
+      const tryPlay = () => {
+        video
+          .play()
+          .then(() => {
+            // playback started
+            setShowControls(true);
+          })
+          .catch((err) => {
+            // Autoplay blocked or other playback error
+            console.warn("Autoplay blocked or play failed:", err);
+          });
+      };
+
+      // Try programmatic play; also rely on canplaythrough/load events below
+      tryPlay();
 
       const controlsTimer = setTimeout(() => setShowControls(true), 2000);
-      return () => clearTimeout(controlsTimer);
+
+      // Clean up when dialog closes
+      return () => {
+        clearTimeout(controlsTimer);
+        try {
+          video.pause();
+        } catch (e) {
+          // ignore
+        }
+      };
     }
   }, [dialogOpen, selectedItem]);
 
@@ -75,6 +98,7 @@ export default function PortfolioPage() {
   }, []);
 
   const handleViewProject = (item: PortfolioItem) => {
+    console.debug("Opening project, trailerUrl:", item.trailerUrl);
     setSelectedItem(item);
     setDialogOpen(true);
   };
@@ -87,7 +111,8 @@ export default function PortfolioPage() {
           Our <span className="text-[#F97316]">Work</span>
         </h1>
         <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto">
-          Explore our cinematic productions — crafted with creativity, precision, and storytelling mastery.
+          Explore our cinematic productions — crafted with creativity,
+          precision, and storytelling mastery.
         </p>
       </section>
 
@@ -129,8 +154,12 @@ export default function PortfolioPage() {
                   </div>
                 </motion.div>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">{item.title}</h3>
-                  <p className="text-[#9CA3AF] text-sm leading-relaxed">{item.description}</p>
+                  <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-[#9CA3AF] text-sm leading-relaxed">
+                    {item.description}
+                  </p>
                 </CardContent>
               </Card>
             ))
@@ -144,7 +173,9 @@ export default function PortfolioPage() {
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="bg-[#1A1A1A] border-[#27272A] text-[#F3F4F6] max-w-[1200px] w-[90vw] sm:max-w-[1100px]">
               <DialogHeader>
-                <DialogTitle className="text-2xl">{selectedItem.title}</DialogTitle>
+                <DialogTitle className="text-2xl">
+                  {selectedItem.title}
+                </DialogTitle>
               </DialogHeader>
 
               <motion.div
@@ -156,21 +187,76 @@ export default function PortfolioPage() {
               >
                 <div className="md:col-span-2 relative">
                   {selectedItem.trailerUrl ? (
-                    <motion.video
-                      ref={videoRef}
-                      key={selectedItem.id}
-                      muted={isMuted}
-                      loop
-                      playsInline
-                      autoPlay
-                      preload="metadata"
-                      src={selectedItem.trailerUrl}
-                      poster={selectedItem.imageUrl || undefined}
-                      className="w-full h-[28rem] rounded-lg bg-black object-cover"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8 }}
-                    />
+                    // If the URL looks like a YouTube/watch URL, embed it instead
+                    selectedItem.trailerUrl.includes("youtube.com") ||
+                    selectedItem.trailerUrl.includes("youtu.be") ? (
+                      <div className="w-full h-[28rem] rounded-lg overflow-hidden bg-black">
+                        <iframe
+                          className="w-full h-full"
+                          src={
+                            selectedItem.trailerUrl.includes("embed")
+                              ? selectedItem.trailerUrl
+                              : selectedItem.trailerUrl.includes("youtu.be")
+                              ? `https://www.youtube.com/embed/${selectedItem.trailerUrl
+                                  .split("/")
+                                  .pop()}?autoplay=1&mute=1&controls=1&rel=0`
+                              : `https://www.youtube.com/embed/${new URL(
+                                  selectedItem.trailerUrl
+                                ).searchParams.get(
+                                  "v"
+                                )}?autoplay=1&mute=1&controls=1&rel=0`
+                          }
+                          title={selectedItem.title}
+                          allow="autoplay; encrypted-media; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : (
+                      <motion.video
+                        ref={videoRef}
+                        key={selectedItem.id}
+                        muted={isMuted}
+                        loop
+                        playsInline
+                        autoPlay
+                        preload="metadata"
+                        src={selectedItem.trailerUrl}
+                        poster={selectedItem.imageUrl || undefined}
+                        className="w-full h-[28rem] rounded-lg bg-black object-cover"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.8 }}
+                        // Handlers to improve autoplay reliability and debugging
+                        onCanPlay={() => {
+                          // attempt to play once media is ready
+                          if (videoRef.current) {
+                            videoRef.current.play().catch((err) => {
+                              console.warn("Play prevented on canplay:", err);
+                            });
+                          }
+                        }}
+                        onLoadedData={() => {
+                          // ensure we attempt play once data is loaded
+                          if (videoRef.current) {
+                            videoRef.current.play().catch(() => {});
+                          }
+                        }}
+                        onError={(e) => {
+                          // Log detailed media error
+                          console.error("Video error event:", e);
+                          if (videoRef.current?.error) {
+                            console.error(
+                              "MediaError:",
+                              videoRef.current.error
+                            );
+                          }
+                        }}
+                        onPlay={() => {
+                          setShowControls(true);
+                        }}
+                        controls={showControls && !isMuted}
+                      />
+                    )
                   ) : (
                     <div className="h-[28rem] bg-[#0E0E0E] rounded-lg flex items-center justify-center text-[#9CA3AF]">
                       No trailer available
@@ -205,10 +291,15 @@ export default function PortfolioPage() {
                   <span className="inline-block px-3 py-1 bg-[#F97316] text-white text-xs font-semibold rounded-full">
                     {selectedItem.category}
                   </span>
-                  <h3 className="text-xl font-semibold text-[#F3F4F6] mt-4">{selectedItem.title}</h3>
-                  <p className="text-[#9CA3AF] mt-2 leading-relaxed">{selectedItem.description}</p>
+                  <h3 className="text-xl font-semibold text-[#F3F4F6] mt-4">
+                    {selectedItem.title}
+                  </h3>
+                  <p className="text-[#9CA3AF] mt-2 leading-relaxed">
+                    {selectedItem.description}
+                  </p>
                   <p className="text-[#C5A36C] mt-4">
-                    <span className="font-semibold">Director:</span> {selectedItem.clientName}
+                    <span className="font-semibold">Director:</span>{" "}
+                    {selectedItem.clientName}
                   </p>
                 </div>
               </motion.div>
