@@ -24,16 +24,17 @@ export default function IntroSection({
   duration?: number;
 }) {
   const pathname = usePathname();
-
-  // Do not render the cinematic intro on any admin route or its children.
-  // This keeps the admin UI snappy and skip the cinematic experience.
-  if (pathname && pathname.startsWith("/admin")) return null;
-
   const [visible, setVisible] = useState(false);
   const [count, setCount] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const STORAGE_KEY = "ijwi_intro_shown_v1";
+
+  // Do not render the cinematic intro on any admin route or its children.
+  // Keep the hooks order stable by evaluating `skipIntro` after hooks are
+  // declared — returning early here will not change the hooks call order.
+  const skipIntro = pathname && pathname.startsWith("/admin");
+  if (skipIntro) return null;
 
   const BRAND = {
     orange: "#FF7A00",
