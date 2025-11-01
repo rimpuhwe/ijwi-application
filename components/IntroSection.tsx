@@ -23,12 +23,13 @@ export default function IntroSection({
 }: {
   duration?: number;
 }) {
-  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [count, setCount] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
   const STORAGE_KEY = "ijwi_intro_shown_v1";
+
+  const pathname = usePathname();
 
   // Do not render the cinematic intro on any admin route or its children.
   // Keep the hooks order stable by evaluating `skipIntro` after hooks are
