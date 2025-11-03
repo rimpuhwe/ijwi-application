@@ -45,7 +45,16 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Header removed: dashboard will render cards only */}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F3F4F6]">
+            Dashboard
+          </h1>
+          <p className="text-[#9CA3AF] mt-1">Overview of your site</p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         <Card className="bg-[#1A1A1A] border-[#27272A]">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-[#9CA3AF]">

@@ -197,22 +197,24 @@ export default function PortfolioPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F3F4F6]">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F3F4F6]">
             Portfolio Management
           </h1>
           <p className="text-[#9CA3AF] mt-2">
             Showcase your creative works and projects
           </p>
         </div>
-        <Button
-          onClick={handleAddNew}
-          className="bg-[#F97316] hover:bg-[#EA580C] text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Work
-        </Button>
+        <div className="flex-shrink-0">
+          <Button
+            onClick={handleAddNew}
+            className="bg-[#F97316] hover:bg-[#EA580C] text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Work
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

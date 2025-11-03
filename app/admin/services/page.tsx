@@ -149,22 +149,24 @@ export default function ServicesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[#F3F4F6]">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#F3F4F6]">
             Services Management
           </h1>
           <p className="text-[#9CA3AF] mt-2">
             Manage your services and offerings
           </p>
         </div>
-        <Button
-          onClick={handleAddNew}
-          className="bg-[#F97316] hover:bg-[#EA580C] text-white"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Service
-        </Button>
+        <div className="flex-shrink-0">
+          <Button
+            onClick={handleAddNew}
+            className="bg-[#F97316] hover:bg-[#EA580C] text-white"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Service
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -192,7 +194,7 @@ export default function ServicesPage() {
                   <p className="text-[#9CA3AF] mb-4 leading-relaxed">
                     {service.description}
                   </p>
-                
+
                   <div className="flex gap-2 mt-4">
                     <Button
                       variant="ghost"
