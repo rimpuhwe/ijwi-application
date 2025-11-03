@@ -46,7 +46,7 @@ export default function HomePage() {
               size="lg"
               className="bg-[#F97316] hover:bg-[#EA580C] text-white"
             >
-              <Link href="">Reserve Your Spot</Link>
+              <Link href="/booking">Reserve Your Spot</Link>
             </Button>
             <Button
               asChild
