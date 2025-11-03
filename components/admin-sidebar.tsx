@@ -36,12 +36,18 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Desktop / tablet sidebar */}
-      <aside className="hidden md:flex md:h-screen md:w-64 md:flex-col bg-[#1A1A1A] border-r border-[#27272A]">
-        <div className="flex h-16 items-center border-b border-[#27272A] px-6">
-          <h1 className="text-xl font-bold text-[#F97316]">IJWI Hub Admin</h1>
+      {/* Desktop / tablet sidebar (collapsed to icon-only, expands on hover) */}
+      <aside className="hidden md:flex md:h-screen md:w-16 md:flex-col bg-[#1A1A1A] border-r border-[#27272A] transition-all duration-200 group hover:w-64">
+        <div className="flex h-16 items-center border-b border-[#27272A] px-2 justify-center">
+          {/* Minimal icon/logo when collapsed; full title visible on hover */}
+          <div className="flex items-center gap-3">
+            <LayoutDashboard className="h-6 w-6 text-[#F97316]" />
+            <span className="ml-2 text-xl font-bold text-[#F97316] opacity-0 scale-95 transition-all duration-150 group-hover:opacity-100 group-hover:scale-100">
+              IJWI Hub
+            </span>
+          </div>
         </div>
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -50,26 +56,34 @@ export function AdminSidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors overflow-hidden",
                   isActive
                     ? "bg-[#F97316] text-white"
                     : "text-[#9CA3AF] hover:bg-[#0E0E0E] hover:text-[#F3F4F6]"
                 )}
               >
-                <Icon className="h-5 w-5" />
-                {item.title}
+                <div className="flex items-center justify-center w-6">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="ml-2 truncate opacity-0 scale-95 transition-all duration-150 group-hover:opacity-100 group-hover:scale-100">
+                  {item.title}
+                </span>
               </Link>
             );
           })}
         </nav>
-        <div className="border-t border-[#27272A] p-4">
+        <div className="border-t border-[#27272A] p-2">
           <Button
             onClick={handleLogout}
             variant="ghost"
             className="w-full justify-start gap-3 text-[#9CA3AF] hover:bg-[#0E0E0E] hover:text-[#F3F4F6]"
           >
-            <LogOut className="h-5 w-5" />
-            Logout
+            <div className="flex items-center justify-center w-6">
+              <LogOut className="h-5 w-5" />
+            </div>
+            <span className="ml-2 opacity-0 scale-95 transition-all duration-150 group-hover:opacity-100 group-hover:scale-100">
+              Logout
+            </span>
           </Button>
         </div>
       </aside>
