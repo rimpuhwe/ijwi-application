@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import IntroSection from "@/components/IntroSection";
 import ClientOnly from "@/components/ClientOnly";
+import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 import MainContent from "@/components/MainContent";
 import { Suspense } from "react";
 import "./globals.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
         {/* IntroSection overlays the site on first load with a cinematic intro. */}
         <ClientOnly>
           <IntroSection />
+          <ChunkErrorHandler />
         </ClientOnly>
         <Suspense fallback={<div>Loading...</div>}>
           <Navbar />
