@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -35,6 +42,10 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Carousel API and current slide index
+  const [carouselApi, setCarouselApi] = useState<any | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     async function fetchServices() {
@@ -68,6 +79,30 @@ export default function ServicesPage() {
     setDialogOpen(true);
   };
 
+  // Helper: group services into chunks of 3 (slides)
+  const slides: Service[][] = [];
+  for (let i = 0; i < services.length; i += 3) {
+    slides.push(services.slice(i, i + 3));
+  }
+
+  // Sync selected index with embla api
+  useEffect(() => {
+    if (!carouselApi) return;
+    const onSelect = () => {
+      try {
+        const idx = carouselApi.selectedScrollSnap();
+        setCurrentSlide(idx);
+      } catch (e) {}
+    };
+    onSelect();
+    carouselApi.on("select", onSelect);
+    carouselApi.on("reInit", onSelect);
+    return () => {
+      carouselApi?.off("select", onSelect);
+      carouselApi?.off("reInit", onSelect);
+    };
+  }, [carouselApi]);
+
   return (
     <div className="bg-[#0E0E0E] min-h-screen">
       {/* Hero Section */}
@@ -83,51 +118,73 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Services Grid */}
+      {/* Services Carousel */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {loading ? (
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 flex items-center justify-center py-12">
-                <div className="text-center">
-                  <Spinner className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
-                  <div className="text-[#9CA3AF]">Loading services…</div>
-                </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Spinner className="w-10 h-10 text-[#F97316] mx-auto mb-4" />
+                <div className="text-[#9CA3AF]">Loading services…</div>
               </div>
-            ) : services.length === 0 ? (
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center text-[#9CA3AF] py-12">
-                No services available at the moment.
+            </div>
+          ) : services.length === 0 ? (
+            <div className="text-center text-[#9CA3AF] py-12">
+              No services available at the moment.
+            </div>
+          ) : (
+            <div className="relative">
+              <Carousel setApi={setCarouselApi} className="py-4 px-6">
+                <CarouselContent>
+                  {slides.map((group, idx) => (
+                    <CarouselItem key={idx} className="!basis-full">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        {group.map((service) => {
+                          const IconComponent =
+                            iconMap[service.icon] || Lightbulb;
+                          return (
+                            <div key={service.id} className="px-2">
+                              <Card className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors">
+                                <CardHeader>
+                                  <IconComponent className="w-12 h-12 text-[#F97316] mb-4" />
+                                  <CardTitle className="text-[#F3F4F6]">
+                                    {service.title}
+                                  </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                  <p className="text-[#9CA3AF] mb-4 leading-relaxed">
+                                    {service.description}
+                                  </p>
+                                </CardContent>
+                              </Card>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                {/* Arrows: position inside carousel padding so they remain visible when cards are wide */}
+                <CarouselPrevious className="disabled:hidden left-4 z-20" />
+                <CarouselNext className="right-4 z-20" />
+              </Carousel>
+
+              {/* Bullets */}
+              <div className="mt-6 flex items-center justify-center gap-3">
+                {slides.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => carouselApi?.scrollTo(i)}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      currentSlide === i ? "bg-gray-400" : "bg-gray-700"
+                    }`}
+                  />
+                ))}
               </div>
-            ) : (
-              services.map((service) => {
-                const IconComponent = iconMap[service.icon] || Lightbulb;
-                return (
-                  <Card
-                    key={service.id}
-                    className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors"
-                  >
-                    <CardHeader>
-                      <IconComponent className="w-12 h-12 text-[#F97316] mb-4" />
-                      <CardTitle className="text-[#F3F4F6]">
-                        {service.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-[#9CA3AF] mb-4 leading-relaxed">
-                        {service.description}
-                      </p>
-                      <Button
-                        onClick={() => handleLearnMore(service)}
-                        className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white"
-                      >
-                        Learn More
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
