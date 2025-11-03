@@ -5,7 +5,8 @@ import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import IntroSection from "@/components/IntroSection";
+// IntroSection removed per user request to avoid duplicate intros on the homepage.
+// Keep Page-specific loaders (e.g. `Loader` used in `app/page.tsx`) instead.
 import ClientOnly from "@/components/ClientOnly";
 import ChunkErrorHandler from "@/components/ChunkErrorHandler";
 import MainContent from "@/components/MainContent";
@@ -30,9 +31,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}
       >
-        {/* IntroSection overlays the site on first load with a cinematic intro. */}
+        {/* Global client-side helpers (error recovery). IntroSection intentionally removed to avoid
+            duplicate cinematic intros on the homepage; homepage uses its own Loader instead. */}
         <ClientOnly>
-          <IntroSection />
           <ChunkErrorHandler />
         </ClientOnly>
         <Suspense fallback={<div>Loading...</div>}>
