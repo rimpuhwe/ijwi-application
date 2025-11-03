@@ -33,8 +33,8 @@ export default function HomePage() {
       >
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F3F4F6] mb-6 leading-tight text-balance">
-            Empowering Creators Through
-            <span className="text-[#F97316]"> Sound & Technology</span>
+            The soul of African cinema in sound.
+            <span className="text-[#F97316]"> Telling stories through sound.</span>
           </h1>
           <p className="text-lg sm:text-xl text-[#9CA3AF] mb-8 max-w-3xl mx-auto leading-relaxed text-pretty">
             IJWI Hub is a creative innovation and sound technology hub focused
