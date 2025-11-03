@@ -46,7 +46,7 @@ export default function HomePage() {
               size="lg"
               className="bg-[#F97316] hover:bg-[#EA580C] text-white"
             >
-              <Link href="/services">Explore Our Services</Link>
+              <Link href="">Reserve Your Spot</Link>
             </Button>
             <Button
               asChild
@@ -72,9 +72,9 @@ export default function HomePage() {
             {/* Stats grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {[
-                { number: "500+", label: "Projects Completed" },
-                { number: "200+", label: "Happy Clients" },
-                { number: "50+", label: "Creative Partners" },
+                { number: "50+", label: "Projects Completed" },
+                { number: "20+", label: "Happy Clients" },
+                { number: "5+", label: "Creative Partners" },
                 { number: "10+", label: "Years Experience" },
               ].map((stat, index) => (
                 <CinematicCard key={index} className="">
