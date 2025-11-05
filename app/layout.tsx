@@ -21,6 +21,11 @@ export const metadata = {
   keywords:
     "IJWI HUB, African cinema, sound design, post-production, film audio, Foley, ADR, dialogue editing, music scoring, sound mixing, Rwanda film studio, African storytelling, filmmaking, audio production",
   authors: [{ name: "IJWI HUB", url: "https://www.ijwihub.com" }],
+  icons:{
+    icon: "/ijwi-logo.png",
+    shortcut: "/ijwi-logo.png",
+    apple: "/ijwi-logo.png",
+  },
   openGraph: {
     title: "IJWI HUB | Where African Cinema Finds Its Voice",
     description:
@@ -29,7 +34,7 @@ export const metadata = {
     siteName: "IJWI HUB",
     images: [
       {
-        url: "public\ijwi logo.png", 
+        url: "/ijwi-logo.png", 
         width: 1200,
         height: 630,
         alt: "IJWI HUB - Where African Cinema Finds Its Voice",
@@ -43,7 +48,7 @@ export const metadata = {
     title: "IJWI HUB | Where African Cinema Finds Its Voice",
     description:
       "IJWI HUB crafts world-class sound for African cinema — from Foley and dialogue editing to music scoring and final mixing.",
-    images: ["public\img.jpg"], 
+    images: ["/img.jpg"], 
     creator: "@IjwiHub",
   },
   robots: {
@@ -70,7 +75,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "IJWI HUB",
               url: "https://www.ijwihub.com",
-              logo: "public\ijwi logo.png",
+              logo: "/ijwi-logo.png",
               description:
                 "A Rwandan sound design and post-production studio dedicated to giving African cinema its true voice.",
               sameAs: [
@@ -87,7 +92,6 @@ export default function RootLayout({
             }),
           }}
         />
-        <title>IJWI HUB | Where African Cinema Finds Its Voice</title>
       </head>
       <body
         suppressHydrationWarning
