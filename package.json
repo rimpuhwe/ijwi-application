@@ -2,9 +2,10 @@
   "name": "my-v0-project",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-  "build": "next build",
-  "dev": "next dev -p 3001",
+    "build": "next build",
+    "dev": "next dev -p 3001",
     "lint": "next lint",
     "start": "next start"
   },
@@ -55,6 +56,7 @@
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
+    "next-sitemap": "^4.2.3",
     "next-themes": "latest",
     "react": "^18.2.0",
     "react-day-picker": "9.8.0",
