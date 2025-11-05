@@ -37,7 +37,7 @@ export const metadata = {
     siteName: "IJWI HUB",
     images: [
       {
-        url: "/ijwi-logo.png", 
+        url: "/favicon.ico", 
         width: 1200,
         height: 630,
         alt: "IJWI HUB - Where African Cinema Finds Its Voice",
