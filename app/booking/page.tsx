@@ -362,36 +362,98 @@ export default function BookingPage() {
 
                       <div>
                         <Label className="text-[#9CA3AF]">
-                          Select preferred date range
+                          Select preferred start and end dates
                         </Label>
                         <div className="mt-2 bg-[#0B0B0B] p-3 rounded border border-[#27272A]">
-                          <DayPicker
-                            mode="range"
-                            selected={range}
-                            onSelect={(r) =>
-                              setRange(r as DateRange | undefined)
-                            }
-                            className="rdp text-white"
-                            styles={{
-                              root: { background: "transparent" },
-                              caption: { color: "#F3F4F6" },
-                              head_cell: { color: "#9CA3AF" },
-                              head_row: { borderColor: "#27272A" },
-                              table: { color: "#F3F4F6" },
-                              day: {
-                                color: "#F3F4F6",
-                                background: "transparent",
-                              },
-                              day_outside: { color: "#6B7280" },
-                              day_selected: {
-                                background: "#F97316",
-                                color: "#fff",
-                              },
-                            }}
-                          />
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Start date picker */}
+                            <div>
+                              <div className="text-xs text-[#9CA3AF] mb-2">
+                                Start date
+                              </div>
+                              <div className="rounded bg-transparent">
+                                <DayPicker
+                                  mode="single"
+                                  selected={range?.from}
+                                  onSelect={(d) => {
+                                    const date = d as Date | undefined;
+                                    if (date && range?.to && date > range.to) {
+                                      setRange({ from: date });
+                                    } else {
+                                      setRange({ from: date, to: range?.to });
+                                    }
+                                  }}
+                                  className="rdp text-white"
+                                  styles={{
+                                    root: { background: "transparent" },
+                                    caption: { color: "#F3F4F6" },
+                                    head_cell: { color: "#9CA3AF" },
+                                    head_row: { borderColor: "#27272A" },
+                                    table: { color: "#F3F4F6" },
+                                    day: {
+                                      color: "#F3F4F6",
+                                      background: "transparent",
+                                    },
+                                    day_outside: { color: "#6B7280" },
+                                    day_selected: {
+                                      background: "#F97316",
+                                      color: "#fff",
+                                    },
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* End date picker */}
+                            <div>
+                              <div className="text-xs text-[#9CA3AF] mb-2">
+                                End date
+                              </div>
+                              <div className="rounded bg-transparent">
+                                <DayPicker
+                                  mode="single"
+                                  selected={range?.to}
+                                  onSelect={(d) => {
+                                    const date = d as Date | undefined;
+                                    if (
+                                      date &&
+                                      range?.from &&
+                                      date < range.from
+                                    ) {
+                                      setRange({ from: range.from, to: date });
+                                    } else {
+                                      setRange({ from: range?.from, to: date });
+                                    }
+                                  }}
+                                  disabled={
+                                    range?.from
+                                      ? { before: range.from }
+                                      : undefined
+                                  }
+                                  className="rdp text-white"
+                                  styles={{
+                                    root: { background: "transparent" },
+                                    caption: { color: "#F3F4F6" },
+                                    head_cell: { color: "#9CA3AF" },
+                                    head_row: { borderColor: "#27272A" },
+                                    table: { color: "#F3F4F6" },
+                                    day: {
+                                      color: "#F3F4F6",
+                                      background: "transparent",
+                                    },
+                                    day_outside: { color: "#6B7280" },
+                                    day_selected: {
+                                      background: "#F97316",
+                                      color: "#fff",
+                                    },
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         {(!range?.from || !range?.to) && (
-                            <p className="text-sm text-[#9CA3AF] mt-2">
+                          <p className="text-sm text-[#9CA3AF] mt-2">
                             Please choose a start and end date.
                           </p>
                         )}
