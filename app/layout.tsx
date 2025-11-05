@@ -22,11 +22,8 @@ export const metadata = {
     "IJWI HUB, African cinema, sound design, post-production, film audio, Foley, ADR, dialogue editing, music scoring, sound mixing, Rwanda film studio, African storytelling, filmmaking, audio production",
   authors: [{ name: "IJWI HUB", url: "https://www.ijwihub.com" }],
   icons:{
-      icon: [
-      { url: "/ijwi-logo.png", sizes: "16x16", type: "image/png" },
-      { url: "/ijwi-logo.png", sizes: "32x32", type: "image/png" },
-      { url: "/ijwi-logo.png", sizes: "48x48", type: "image/png" },
-    ],
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
