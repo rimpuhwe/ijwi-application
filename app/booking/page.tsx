@@ -391,7 +391,7 @@ export default function BookingPage() {
                           />
                         </div>
                         {(!range?.from || !range?.to) && (
-                          <p className="text-sm text-[#9CA3AF] mt-2">
+                            <p className="text-sm text-[#9CA3AF] mt-2">
                             Please choose a start and end date.
                           </p>
                         )}
