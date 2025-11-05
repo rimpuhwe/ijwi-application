@@ -88,13 +88,13 @@ export function AdminSidebar() {
         </div>
       </aside>
 
-      {/* Mobile top bar */}
-      <header className="md:hidden flex items-center justify-between bg-[#1A1A1A] border-b border-[#27272A] px-4 py-3">
+      {/* Mobile top bar (fixed) */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-[#1A1A1A] border-b border-[#27272A] px-4 py-3">
         <div className="flex items-center gap-3">
           <button
             aria-label="Open menu"
             onClick={() => setOpen((v) => !v)}
-            className="inline-flex items-center justify-center rounded-md p-2 text-[#9CA3AF] hover:bg-[#0E0E0E]"
+            className="inline-flex items-center justify-center rounded-md p-3 text-[#9CA3AF] hover:bg-[#0E0E0E]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@ export function AdminSidebar() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute left-0 top-0 bottom-0 w-64 bg-[#1A1A1A] border-r border-[#27272A] p-4 overflow-auto">
+          <div className="absolute left-0 top-16 bottom-0 w-64 bg-[#1A1A1A] border-r border-[#27272A] p-4 overflow-auto">
             <div className="flex items-center h-16 px-2 border-b border-[#27272A] mb-4">
               <h2 className="text-lg font-bold text-[#F97316]">Menu</h2>
             </div>
