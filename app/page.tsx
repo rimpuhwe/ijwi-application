@@ -3,7 +3,6 @@
 import Link from "next/link";
 import React, { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, Users, Lightbulb, Award } from "lucide-react";
@@ -23,8 +22,6 @@ export default function HomePage() {
 
   return (
     <div className="bg-[#0E0E0E]">
-      {/* Page load cinematic loader (runs on every reload) */}
-      <Loader />
       {/* Hero Section (full viewport) */}
       <motion.section
         ref={heroRef}
@@ -34,7 +31,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F3F4F6] mb-6 leading-tight text-balance">
             The soul of African cinema in sound.
-            <span className="text-[#F97316]"> Telling stories through sound.</span>
+            <span className="text-[#F97316]">
+              {" "}
+              Telling stories through sound.
+            </span>
           </h1>
           <p className="text-lg sm:text-xl text-[#9CA3AF] mb-8 max-w-3xl mx-auto leading-relaxed text-pretty">
             IJWI Hub is a creative innovation and sound technology hub focused
@@ -67,7 +67,6 @@ export default function HomePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#F3F4F6] text-center mb-4">
               Our Impact
             </h2>
-            
 
             {/* Stats grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -80,7 +79,9 @@ export default function HomePage() {
                 <CinematicCard key={index} className="">
                   <Card className="bg-[#0E0E0E] border-[#27272A]">
                     <CardContent className="p-6 text-center">
-                      <div className="text-4xl font-bold text-[#F97316] mb-2">{stat.number}</div>
+                      <div className="text-4xl font-bold text-[#F97316] mb-2">
+                        {stat.number}
+                      </div>
                       <div className="text-[#9CA3AF]">{stat.label}</div>
                     </CardContent>
                   </Card>
@@ -97,8 +98,12 @@ export default function HomePage() {
       <SectionReveal>
         <section className="py-12 px-4 sm:px-6 lg:px-8 bg-[#0E0E0E]">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#F3F4F6] text-center mb-4">Our Products</h2>
-            <p className="text-[#9CA3AF] text-center mb-8 max-w-2xl mx-auto">Services designed to bring your vision to life</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#F3F4F6] text-center mb-4">
+              Our Products
+            </h2>
+            <p className="text-[#9CA3AF] text-center mb-8 max-w-2xl mx-auto">
+              Services designed to bring your vision to life
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
@@ -106,36 +111,58 @@ export default function HomePage() {
                   title: "Audio Production",
                   description:
                     "Professional recording, mixing, and mastering services for music and podcasts",
-                  features: ["Studio Recording", "Sound Mixing", "Audio Mastering"],
+                  features: [
+                    "Studio Recording",
+                    "Sound Mixing",
+                    "Audio Mastering",
+                  ],
                 },
                 {
                   title: "Video Production",
                   description:
                     "Cinematic storytelling through high-quality video production and editing",
-                  features: ["Cinematography", "Video Editing", "Color Grading"],
+                  features: [
+                    "Cinematography",
+                    "Video Editing",
+                    "Color Grading",
+                  ],
                 },
                 {
                   title: "Creative Consulting",
                   description:
                     "Strategic guidance for your creative projects and brand storytelling",
-                  features: ["Brand Strategy", "Content Planning", "Creative Direction"],
+                  features: [
+                    "Brand Strategy",
+                    "Content Planning",
+                    "Creative Direction",
+                  ],
                 },
               ].map((pkg, index) => (
                 <CinematicCard key={index} className="">
                   <Card className="bg-[#0E0E0E] border-[#27272A] hover:border-[#C5A36C] transition-colors">
                     <CardContent className="p-6">
                       <Lightbulb className="w-10 h-10 text-[#C5A36C] mb-4" />
-                      <h3 className="text-xl font-semibold text-[#F3F4F6] mb-3">{pkg.title}</h3>
-                      <p className="text-[#9CA3AF] mb-4 leading-relaxed">{pkg.description}</p>
+                      <h3 className="text-xl font-semibold text-[#F3F4F6] mb-3">
+                        {pkg.title}
+                      </h3>
+                      <p className="text-[#9CA3AF] mb-4 leading-relaxed">
+                        {pkg.description}
+                      </p>
                       <ul className="space-y-2 mb-6">
                         {pkg.features.map((feature, idx) => (
-                          <li key={idx} className="text-[#9CA3AF] text-sm flex items-center gap-2">
+                          <li
+                            key={idx}
+                            className="text-[#9CA3AF] text-sm flex items-center gap-2"
+                          >
                             <span className="w-1.5 h-1.5 bg-[#F97316] rounded-full"></span>
                             {feature}
                           </li>
                         ))}
                       </ul>
-                      <Button asChild className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white">
+                      <Button
+                        asChild
+                        className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white"
+                      >
                         <Link href="/services">Learn More</Link>
                       </Button>
                     </CardContent>
