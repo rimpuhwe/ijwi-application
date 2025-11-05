@@ -1,6 +1,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import Script from "next/script";
+import Head from "next/head";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Analytics } from "@vercel/analytics/next";
@@ -22,7 +23,7 @@ export const metadata = {
     "IJWI HUB, African cinema, sound design, post-production, film audio, Foley, ADR, dialogue editing, music scoring, sound mixing, Rwanda film studio, African storytelling, filmmaking, audio production",
   authors: [{ name: "IJWI HUB", url: "https://www.ijwihub.com" }],
   icons:{
-    icon: "/favicon.ico",
+    icon: "/ijwi-logo.png",
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
@@ -34,7 +35,7 @@ export const metadata = {
     siteName: "IJWI HUB",
     images: [
       {
-        url: "/favicon.ico", 
+        url: "/ijwi-logo.png", 
         width: 1200,
         height: 630,
         alt: "IJWI HUB - Where African Cinema Finds Its Voice",
@@ -65,7 +66,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       <head>
+       <Head>
         <Script
           id="organization-schema"
           type="application/ld+json"
@@ -92,7 +93,7 @@ export default function RootLayout({
             }),
           }}
         />
-      </head>
+      </Head>
       <body
         suppressHydrationWarning
         className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}
