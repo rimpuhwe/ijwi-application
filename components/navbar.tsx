@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Logo from "../public/ijwi logo.png"
+import Logo from "../public/ijwi-logo.png"
 
 export function Navbar() {
   const pathname = usePathname();
