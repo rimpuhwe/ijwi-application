@@ -70,7 +70,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "IJWI HUB",
               url: "https://www.ijwihub.com",
-              logo: "https://www.ijwihub.com/_next/static/media/ijwi%20logo.529771eb.png",
+              logo: "public\ijwi logo.png",
               description:
                 "A Rwandan sound design and post-production studio dedicated to giving African cinema its true voice.",
               sameAs: [
@@ -87,6 +87,7 @@ export default function RootLayout({
             }),
           }}
         />
+        <title>IJWI HUB | Where African Cinema Finds Its Voice</title>
       </head>
       <body
         suppressHydrationWarning
