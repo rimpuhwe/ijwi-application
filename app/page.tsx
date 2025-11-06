@@ -60,36 +60,108 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* Our Impact Section - revealed on scroll */}
+      {/* Our Services Section - revealed on scroll */}
       <SectionReveal>
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#1A1A1A]">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#F3F4F6] text-center mb-4">
-              Our Impact
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#F3F4F6] text-center mb-8">
+              Our Services
             </h2>
 
-            {/* Stats grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {[
-                { number: "50+", label: "Projects Completed" },
-                { number: "20+", label: "Happy Clients" },
-                { number: "5+", label: "Creative Partners" },
-                { number: "10+", label: "Years Experience" },
-              ].map((stat, index) => (
-                <CinematicCard key={index} className="">
-                  <Card className="bg-[#0E0E0E] border-[#27272A]">
-                    <CardContent className="p-6 text-center">
-                      <div className="text-4xl font-bold text-[#F97316] mb-2">
-                        {stat.number}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <CinematicCard>
+                <Card className="bg-[#0E0E0E] border-[#27272A] h-full flex flex-col">
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                      Sound Editing & Design
+                    </h3>
+                    <p className="text-[#9CA3AF] mb-3">
+                      We bring your story to life through immersive soundscapes.
+                      From dialogue cleanup to Foley and original sound effects,
+                      our team crafts every detail to match your film’s emotion
+                      and rhythm.
+                    </p>
+                    <div className="mt-3">
+                      <div className="text-sm text-[#C5A36C] font-medium mb-2">
+                        Includes:
                       </div>
-                      <div className="text-[#9CA3AF]">{stat.label}</div>
-                    </CardContent>
-                  </Card>
-                </CinematicCard>
-              ))}
+                      <ul className="text-sm text-[#9CA3AF] list-disc list-inside marker:text-[#F97316] space-y-1">
+                        <li>Dialogue editing</li>
+                        <li>Foley</li>
+                        <li>Sound effects</li>
+                        <li>Ambience creation</li>
+                        <li>Noise reduction</li>
+                        <li>Sound restoration</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CinematicCard>
+
+              <CinematicCard>
+                <Card className="bg-[#0E0E0E] border-[#27272A] h-full flex flex-col">
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                      ADR & Voice Recording
+                    </h3>
+                    <p className="text-[#9CA3AF] mb-3">
+                      Perfecting every word and tone. Our ADR and voice
+                      recording sessions ensure crystal-clear dialogue and
+                      powerful voice performances that align perfectly with your
+                      visuals.
+                    </p>
+                    <div className="mt-3">
+                      <div className="text-sm text-[#C5A36C] font-medium mb-2">
+                        Includes:
+                      </div>
+                      <ul className="text-sm text-[#9CA3AF] list-disc list-inside marker:text-[#F97316] space-y-1">
+                        <li>ADR sessions</li>
+                        <li>Voiceovers</li>
+                        <li>Character voice performance</li>
+                        <li>Sync-to-picture recording</li>
+                        <li>Multilingual recording</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CinematicCard>
+
+              <CinematicCard>
+                <Card className="bg-[#0E0E0E] border-[#27272A] h-full flex flex-col">
+                  <CardContent className="p-6 flex-1 flex flex-col">
+                    <h3 className="text-xl font-semibold text-[#F3F4F6] mb-2">
+                      Mixing & Mastering
+                    </h3>
+                    <p className="text-[#9CA3AF] mb-3">
+                      We blend every sound element into a rich, balanced
+                      soundtrack ready for cinema, TV, or streaming platforms.
+                      Your project receives the final polish it deserves.
+                    </p>
+                    <div className="mt-3">
+                      <div className="text-sm text-[#C5A36C] font-medium mb-2">
+                        Includes:i
+                      </div>
+                      <ul className="text-sm text-[#9CA3AF] list-disc list-inside marker:text-[#F97316] space-y-1">
+                        <li>Stereo, 5.1, or Dolby Atmos mixing</li>
+                        <li>Sound balancing</li>
+                        <li>Loudness mastering</li>
+                        <li>Final deliverables for DCP or broadcast</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CinematicCard>
             </div>
 
-            {/* Services / Offerings grid removed from here and rendered in its own "Our Products" section below */}
+            <div className="mt-8 text-center">
+              <Button
+                asChild
+                size="lg"
+                className="bg-[#F97316] hover:bg-[#EA580C] text-white"
+              >
+                <Link href="/services">View more services</Link>
+              </Button>
+            </div>
           </div>
         </section>
       </SectionReveal>
