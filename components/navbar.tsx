@@ -54,7 +54,7 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Admin Login Button */}
+          {/* Admin Login Button
           <div className="hidden md:block">
             <Button
               asChild
@@ -62,7 +62,7 @@ export function Navbar() {
             >
               <Link href="/admin/login">Admin Login</Link>
             </Button>
-          </div>
+          </div> */}
 
           {/* Mobile Menu Button */}
           <button
