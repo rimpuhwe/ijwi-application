@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,7 @@ export default function ServicesPage() {
   // Carousel API and current slide index
   const [carouselApi, setCarouselApi] = useState<any | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchServices() {
@@ -74,15 +76,33 @@ export default function ServicesPage() {
     fetchServices();
   }, []);
 
+  // detect small screens (matches Tailwind 'sm' breakpoint)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const handler = (e: MediaQueryListEvent | MediaQueryList) =>
+      setIsMobile(!!e.matches);
+    // set initial
+    setIsMobile(!!mq.matches);
+    // add listener
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else mq.addListener(handler as any);
+    return () => {
+      if (mq.removeEventListener)
+        mq.removeEventListener("change", handler as any);
+      else mq.removeListener(handler as any);
+    };
+  }, []);
+
   const handleLearnMore = (service: Service) => {
     setSelectedService(service);
     setDialogOpen(true);
   };
 
-  // Helper: group services into chunks of 3 (slides)
+  // Helper: group services into chunks. On mobile show one card per slide; otherwise 3 per slide
   const slides: Service[][] = [];
-  for (let i = 0; i < services.length; i += 3) {
-    slides.push(services.slice(i, i + 3));
+  const groupSize = isMobile ? 1 : 3;
+  for (let i = 0; i < services.length; i += groupSize) {
+    slides.push(services.slice(i, i + groupSize));
   }
 
   // Sync selected index with embla api
@@ -103,6 +123,17 @@ export default function ServicesPage() {
     };
   }, [carouselApi]);
 
+  // Auto-advance carousel on mobile every 60s
+  useEffect(() => {
+    if (!carouselApi || !isMobile) return;
+    const interval = setInterval(() => {
+      try {
+        carouselApi.scrollNext();
+      } catch (e) {}
+    }, 5000); // 5 seconds
+    return () => clearInterval(interval);
+  }, [carouselApi, isMobile]);
+
   return (
     <div className="bg-[#0E0E0E] min-h-screen">
       {/* Hero Section */}
@@ -117,6 +148,8 @@ export default function ServicesPage() {
           </p>
         </div>
       </section>
+
+      {/* Reserve CTA - encourage users to book after reviewing services (moved after carousel) */}
 
       {/* Services Carousel */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
@@ -185,6 +218,33 @@ export default function ServicesPage() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Reserve CTA - encourage users to book after reviewing services */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="rounded-xl bg-gradient-to-r from-[#111111] via-[#161616] to-[#111111] border border-[#27272A] p-8 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#F3F4F6] mb-3">
+              Ready to bring your project to life?
+            </h2>
+            <p className="text-[#9CA3AF] mb-6">
+              Your next project deserves more than production, it deserves
+              passion. The next masterpiece starts with one click.
+            </p>
+
+            <div className="flex justify-center">
+              <Button
+                asChild
+                size="lg"
+                className="bg-[#F97316] hover:bg-[#EA580C] text-white w-full sm:w-auto"
+              >
+                <Link href="/booking" className="block text-center w-full">
+                  Start Your Project Today
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
