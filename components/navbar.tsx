@@ -38,20 +38,32 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  pathname === link.href
-                    ? "text-[#F97316]"
-                    : "text-[#F3F4F6] hover:text-[#F97316]"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            {navLinks
+              .filter((l) => l.href !== "/contact")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === link.href
+                      ? "text-[#F97316]"
+                      : "text-[#F3F4F6] hover:text-[#F97316]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+          </div>
+
+          {/* Contact CTA (separated to the right on desktop) */}
+          <div className="hidden md:flex items-center justify-end gap-4">
+            <Link
+              href="/contact"
+              className="text-sm font-medium bg-[#F97316] text-white px-4 py-2 rounded-md hover:bg-[#EA580C]"
+            >
+              Contact
+            </Link>
           </div>
 
           {/* Admin Login Button
@@ -78,25 +90,26 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#1A1A1A] border-t border-[#27272A]">
           <div className="px-4 py-4 space-y-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`block py-2 text-sm font-medium transition-colors ${
-                  pathname === link.href
-                    ? "text-[#F97316]"
-                    : "text-[#F3F4F6] hover:text-[#F97316]"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
+            {navLinks
+              .filter((l) => l.href !== "/contact")
+              .map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`block py-2 text-sm font-medium transition-colors ${
+                    pathname === link.href
+                      ? "text-[#F97316]"
+                      : "text-[#F3F4F6] hover:text-[#F97316]"
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            <Button asChild className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white">
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
+                Contact
               </Link>
-            ))}
-            <Button
-              asChild
-              className="w-full bg-[#F97316] hover:bg-[#EA580C] text-white"
-            >
-              <Link href="/admin/login">Admin Login</Link>
             </Button>
           </div>
         </div>
