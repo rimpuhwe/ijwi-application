@@ -17,7 +17,7 @@ type FormValues = {
   phone?: string;
   company?: string;
   projectTitle?: string;
-  serviceId?: string;
+  service?: string;
   projectNotes?: string;
   startDate?: string;
   endDate?: string;
@@ -33,7 +33,7 @@ export default function BookingPage() {
       phone: "",
       company: "",
       projectTitle: "",
-      serviceId: "",
+      service: "",
       projectNotes: "",
       agree: false,
     },
@@ -460,22 +460,22 @@ export default function BookingPage() {
                       </div>
 
                       <div>
-                        <Label htmlFor="serviceId" className="text-[#9CA3AF]">
+                        <Label htmlFor="service" className="text-[#9CA3AF]">
                           Service category *
                         </Label>
                         <select
-                          id="serviceId"
-                          {...methods.register("serviceId", { required: true })}
+                          id="service"
+                          {...methods.register("service", { required: true })}
                           className="w-full mt-1 px-3 py-2 rounded bg-[#0E0E0E] text-white border border-[#27272A]"
                         >
                           <option value="">Select a service</option>
                           {services.map((s) => (
-                            <option key={s.id} value={s.id}>
+                            <option key={s.id} value={s.name}>
                               {s.name}
                             </option>
                           ))}
                         </select>
-                        {methods.formState.errors.serviceId && (
+                        {methods.formState.errors.service && (
                           <p className="text-sm text-rose-500 mt-1">
                             Choose a service.
                           </p>
