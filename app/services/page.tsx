@@ -79,14 +79,16 @@ export default function ServicesPage() {
   // detect small screens (matches Tailwind 'sm' breakpoint)
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 640px)");
-    const handler = (e: MediaQueryListEvent | MediaQueryList) => setIsMobile(!!e.matches);
+    const handler = (e: MediaQueryListEvent | MediaQueryList) =>
+      setIsMobile(!!e.matches);
     // set initial
     setIsMobile(!!mq.matches);
     // add listener
     if (mq.addEventListener) mq.addEventListener("change", handler);
     else mq.addListener(handler as any);
     return () => {
-      if (mq.removeEventListener) mq.removeEventListener("change", handler as any);
+      if (mq.removeEventListener)
+        mq.removeEventListener("change", handler as any);
       else mq.removeListener(handler as any);
     };
   }, []);
@@ -227,12 +229,19 @@ export default function ServicesPage() {
               Ready to bring your project to life?
             </h2>
             <p className="text-[#9CA3AF] mb-6">
-              Your next project deserves more than production, it deserves passion. The next masterpiece starts with one click.
+              Your next project deserves more than production, it deserves
+              passion. The next masterpiece starts with one click.
             </p>
-            
+
             <div className="flex justify-center">
-              <Button asChild size="lg" className="bg-[#F97316] hover:bg-[#EA580C] text-white w-full sm:w-auto">
-                <Link href="/booking" className="block text-center w-full">Start Your Project Today</Link>
+              <Button
+                asChild
+                size="lg"
+                className="bg-[#F97316] hover:bg-[#EA580C] text-white w-full sm:w-auto"
+              >
+                <Link href="/booking" className="block text-center w-full">
+                  Start Your Project Today
+                </Link>
               </Button>
             </div>
           </div>
