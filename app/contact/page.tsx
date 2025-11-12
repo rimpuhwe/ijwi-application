@@ -98,7 +98,7 @@ export default function ContactPage() {
                       <h3 className="text-[#F3F4F6] font-semibold mb-2">
                         Phone
                       </h3>
-                      <p className="text-[#9CA3AF]">+250 788 544 839</p>
+                      <p className="text-[#9CA3AF]">+250 787 441 489</p>
                     </CardContent>
                   </Card>
                 </CinematicCard>
