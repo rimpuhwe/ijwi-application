@@ -1,0 +1,5 @@
+app/api/portfolio/route.ts
+app/api/portfolio/[id]/route.ts
+app/api/services/route.ts
+app/api/services/[id]/route.ts
+app/api/admin-login/route.ts

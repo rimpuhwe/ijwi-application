@@ -38,8 +38,9 @@ export default function MainContent({
   }, []);
 
   return (
-    <div id="lenis-wrap" className="min-h-screen">
+    <main id="lenis-wrap" className="relative min-h-screen z-10">
+      {/* The z-10 ensures content is above the background image */}
       {children}
-    </div>
+    </main>
   );
 }

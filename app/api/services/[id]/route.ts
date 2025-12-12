@@ -1,41 +1,34 @@
-import { NextResponse } from "next/server"
-import { getServiceById, updateService, deleteService } from "@/lib/services-data"
+import { NextResponse } from 'next/server';
+import { connectToDatabase } from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const service = getServiceById(id)
-
-  if (!service) {
-    return NextResponse.json({ error: "Service not found" }, { status: 404 })
-  }
-
-  return NextResponse.json(service)
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const { db } = await connectToDatabase();
+  const service = await db.collection('services').findOne({ _id: new ObjectId(params.id) });
+  if (!service) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+  return NextResponse.json(service);
 }
 
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = await params
-    const body = await request.json()
-
-    const updatedService = updateService(id, body)
-
-    if (!updatedService) {
-      return NextResponse.json({ error: "Service not found" }, { status: 404 })
-    }
-
-    return NextResponse.json(updatedService)
+    const { db } = await connectToDatabase();
+    const updates = await request.json();
+    const result = await db.collection('services').findOneAndUpdate(
+      { _id: new ObjectId(params.id) },
+      { $set: updates },
+      { returnDocument: 'after' }
+    );
+    if (!result.value) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+    return NextResponse.json(result.value);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update service" }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update service' }, { status: 500 });
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const deleted = deleteService(id)
-
-  if (!deleted) {
-    return NextResponse.json({ error: "Service not found" }, { status: 404 })
-  }
-
-  return NextResponse.json({ message: "Service deleted successfully" })
+export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  const { db } = await connectToDatabase();
+  const result = await db.collection('services').deleteOne({ _id: new ObjectId(params.id) });
+  if (!result.deletedCount) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+  return NextResponse.json({ message: 'Service deleted successfully' });
+}
 }

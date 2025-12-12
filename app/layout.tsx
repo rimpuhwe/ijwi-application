@@ -63,8 +63,25 @@ export default function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning
-        className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}
+        className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased relative min-h-screen`}
+        style={{
+          // fallback color in case image fails
+          backgroundColor: "#18181b",
+        }}
       >
+        {/* Background image layer */}
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 -z-10 bg-black/70"
+          style={{
+            backgroundImage: "url(/img.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            filter: "blur(2px) brightness(0.6)",
+            transition: "opacity 0.5s",
+          }}
+        />
         {/* JSON-LD structured data for Google */}
         <Script
           id="organization-schema"

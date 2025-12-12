@@ -1,0 +1,14 @@
+lib/supabaseClient.ts
+lib/auth.ts
+lib/portfolio-data.ts
+lib/services-data.ts
+components/admin-sidebar.tsx
+components/portfolio-dialog.tsx
+components/service-dialog.tsx
+components/CinematicCard.tsx
+components/ClientOnly.tsx
+components/ChunkErrorHandler.tsx
+components/MainContent.tsx
+components/IntroSection.tsx
+components/SectionReveal.tsx
+components/theme-provider.tsx
