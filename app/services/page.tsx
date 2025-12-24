@@ -19,7 +19,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Mic, Video, Lightbulb, Music, Camera, Headphones } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 import { Spinner } from "@/components/ui/spinner";
 
 interface Service {
@@ -53,26 +52,21 @@ export default function ServicesPage() {
     async function fetchServices() {
       setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from("services")
-          .select("*")
-          .order("id", { ascending: true });
-        if (error) {
-          console.error("Error fetching services:", error.message);
-          setServices([]);
-        } else if (data && data.length > 0) {
-          setServices(data);
-        } else {
-          setServices([]);
-        }
+        const res = await fetch("/api/services");
+        if (!res.ok) throw new Error("Failed to fetch services");
+        const data = await res.json();
+        setServices(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("Unexpected error fetching services:", err);
+        const errorMsg =
+          err && typeof err === "object" && "message" in err
+            ? (err as any).message
+            : String(err);
+        console.error("Error fetching services:", errorMsg);
         setServices([]);
       } finally {
         setLoading(false);
       }
     }
-
     fetchServices();
   }, []);
 
@@ -176,7 +170,7 @@ export default function ServicesPage() {
                           const IconComponent =
                             iconMap[service.icon] || Lightbulb;
                           return (
-                            <div key={service.id} className="px-2">
+                            <div key={service.id || idx} className="px-2">
                               <Card className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors">
                                 <CardHeader>
                                   <IconComponent className="w-12 h-12 text-[#F97316] mb-4" />

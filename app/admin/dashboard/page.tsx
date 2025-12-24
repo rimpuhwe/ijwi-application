@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, FolderOpen, TrendingUp } from "lucide-react";
-import { supabase } from "../../../lib/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
@@ -16,26 +15,19 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function fetchCounts() {
-      const { count: serviceTotal, error: serviceError } = await supabase
-        .from("services")
-        .select("*", { count: "exact", head: true });
-      const { count: portfolioTotal, error: portfolioError } = await supabase
-        .from("portfolio")
-        .select("*", { count: "exact", head: true });
-      if (serviceError) {
-        console.error("Error fetching service count:", serviceError.message);
+      try {
+        const [servicesRes, portfolioRes] = await Promise.all([
+          fetch("/api/services"),
+          fetch("/api/portfolio"),
+        ]);
+        const services = await servicesRes.json();
+        const portfolios = await portfolioRes.json();
+        setServiceCount(Array.isArray(services) ? services.length : 0);
+        setPortfolioCount(Array.isArray(portfolios) ? portfolios.length : 0);
+      } catch (err) {
+        console.error("Error fetching counts:", err);
         setServiceCount(0);
-      } else {
-        setServiceCount(serviceTotal || 0);
-      }
-      if (portfolioError) {
-        console.error(
-          "Error fetching portfolio count:",
-          portfolioError.message
-        );
         setPortfolioCount(0);
-      } else {
-        setPortfolioCount(portfolioTotal || 0);
       }
     }
     fetchCounts();

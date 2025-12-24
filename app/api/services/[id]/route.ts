@@ -5,9 +5,9 @@ import { ObjectId } from 'mongodb';
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   const { db } = await connectToDatabase();
   const service = await db.collection('services').findOne({ _id: new ObjectId(params.id) });
-  if (!service) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
-  return NextResponse.json(service);
-}
+    if (!service) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
+    return NextResponse.json(service);
+  }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -30,5 +30,4 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
   const result = await db.collection('services').deleteOne({ _id: new ObjectId(params.id) });
   if (!result.deletedCount) return NextResponse.json({ error: 'Service not found' }, { status: 404 });
   return NextResponse.json({ message: 'Service deleted successfully' });
-}
 }

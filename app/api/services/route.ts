@@ -10,8 +10,8 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, description, icon, price } = body;
-    if (!title || !description || !icon || !price) {
+    const { title, description, icon } = body;
+    if (!title || !description || !icon) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -20,9 +20,9 @@ export async function POST(request: Request) {
     const { db } = await connectToDatabase();
     const result = await db
       .collection("services")
-      .insertOne({ title, description, icon, price });
+      .insertOne({ title, description, icon });
     return NextResponse.json(
-      { _id: result.insertedId, title, description, icon, price },
+      { _id: result.insertedId, title, description, icon },
       { status: 201 }
     );
   } catch (error) {

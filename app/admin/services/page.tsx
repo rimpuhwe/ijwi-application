@@ -1,5 +1,4 @@
 "use client";
-import { supabase } from "@/lib/supabaseClient";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -45,16 +44,13 @@ export default function ServicesPage() {
 
   useEffect(() => {
     async function fetchServices() {
-      const { data, error } = await supabase
-        .from("services")
-        .select("*")
-        .order("id", { ascending: true });
-      if (error) {
-        console.error("Error fetching services:", error.message);
-        setServices([]);
-      } else if (data && data.length > 0) {
-        setServices(data);
-      } else {
+      try {
+        const res = await fetch("/api/services");
+        if (!res.ok) throw new Error("Failed to fetch services");
+        const data = await res.json();
+        setServices(Array.isArray(data) ? data : []);
+      } catch (error: any) {
+        console.error("Error fetching services:", error?.message || error);
         setServices([]);
       }
     }
@@ -76,33 +72,40 @@ export default function ServicesPage() {
       if (lower.includes("video")) return "video";
       if (lower.includes("mic") || lower.includes("record")) return "mic";
       if (lower.includes("camera") || lower.includes("photo")) return "camera";
-      if (lower.includes("creative") || lower.includes("consult"))
-        return "lightbulb";
+      if (lower.includes("creative") || lower.includes("consult")) return "lightbulb";
       return "lightbulb";
     };
     async function saveService() {
-      if ("id" in service) {
-        // Update
+      try {
+        let res;
         const icon = getIconFromTitle(service.title);
-        const { error } = await supabase
-          .from("services")
-          .update({ ...service, icon })
-          .eq("id", service.id);
-        if (error) console.error("Error updating service:", error.message);
-      } else {
-        // Create
-        const icon = getIconFromTitle(service.title);
-        const { error } = await supabase
-          .from("services")
-          .insert([{ ...service, icon }]);
-        if (error) console.error("Error creating service:", error.message);
+        if ("id" in service) {
+          // Update
+          res = await fetch(`/api/services/${service.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...service, icon }),
+          });
+        } else {
+          // Create
+          res = await fetch("/api/services", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...service, icon }),
+          });
+        }
+        if (!res.ok) throw new Error("Failed to save service");
+      } catch (error: any) {
+        console.error("Error saving service:", error?.message || error);
       }
       // Refetch after save
-      const { data } = await supabase
-        .from("services")
-        .select("*")
-        .order("id", { ascending: true });
-      setServices(data || []);
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        setServices(Array.isArray(data) ? data : []);
+      } catch {
+        setServices([]);
+      }
       setSelectedService(null);
     }
     saveService();
@@ -115,14 +118,20 @@ export default function ServicesPage() {
 
   const handleDelete = (id: string) => {
     async function deleteService() {
-      const { error } = await supabase.from("services").delete().eq("id", id);
-      if (error) console.error("Error deleting service:", error.message);
+      try {
+        const res = await fetch(`/api/services/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete service");
+      } catch (error: any) {
+        console.error("Error deleting service:", error?.message || error);
+      }
       // Refetch after delete
-      const { data } = await supabase
-        .from("services")
-        .select("*")
-        .order("id", { ascending: true });
-      setServices(data || []);
+      try {
+        const res = await fetch("/api/services");
+        const data = await res.json();
+        setServices(Array.isArray(data) ? data : []);
+      } catch {
+        setServices([]);
+      }
       setDeleteDialogOpen(false);
       setServiceToDelete(null);
     }
@@ -181,7 +190,7 @@ export default function ServicesPage() {
             const IconComponent = iconMap[service.icon] || Lightbulb;
             return (
               <Card
-                key={service.id}
+                key={service.id || service._id}
                 className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors relative"
               >
                 <CardHeader>
