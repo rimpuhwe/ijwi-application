@@ -45,16 +45,16 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               asChild
-              size="xl"
+              size="lg"
               className="bg-[#F97316] hover:bg-[#EA580C] text-white text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase"
             >
               <Link href="/booking">Reserve Your Spot</Link>
             </Button>
             <Button
               asChild
-              size="xl"
+              size="lg"
               variant="outline"
-              className="border-[#C5A36C] text-[#C5A36C] hover:bg-[#C5A36C] hover:text-[#0E0E0E] bg-transparent text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase"
+              className="border-[#F97316] text-[#F97316] hover:bg-[#C5A36C] hover:text-[#0E0E0E] bg-transparent text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase"
             >
               <Link href="/portfolio">View Our Work</Link>
             </Button>
@@ -156,13 +156,15 @@ export default function HomePage() {
             </div>
 
             <div className="mt-8 text-center">
-              <Button
-                asChild
-                size="lg"
-                className="bg-[#F97316] hover:bg-[#EA580C] text-white"
-              >
-                <Link href="/services">View more services</Link>
-              </Button>
+              <div className="mt-8 text-center z-10">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-[#F97316] hover:bg-[#EA580C] text-white text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase"
+                >
+                  <Link href="/services">View more services</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
@@ -190,7 +192,7 @@ export default function HomePage() {
             </p>
             <Button
               asChild
-              size="xl"
+              size="lg"
               className="bg-[#F97316] hover:bg-[#EA580C] text-white text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase"
             >
               <Link href="/contact">Get In Touch</Link>

@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 // Dialog removed: portfolio items no longer open a dialog on public pages
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
+import { portfolio as staticPortfolio } from "@/lib/portfolio-data";
 import { Spinner } from "@/components/ui/spinner";
 import { motion } from "framer-motion";
 
@@ -15,7 +15,7 @@ interface PortfolioItem {
   category: string;
   imageUrl: string;
   trailerUrl?: string | null;
-  clientName: string;
+  ownerProducer: string;
 }
 
 export default function PortfolioPage() {
@@ -23,32 +23,18 @@ export default function PortfolioPage() {
   const [loading, setLoading] = useState(true);
   // Dialog and trailer playback removed on public pages — cards are static
 
-  // Fetch portfolio
+  // Use static portfolio data for public frontend
   useEffect(() => {
-    async function fetchPortfolio() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from("portfolio")
-          .select("*")
-          .order("id", { ascending: true });
-
-        if (error) throw error;
-
-        const normalized = (data ?? []).map((item: any) => ({
+    setLoading(true);
+    setTimeout(() => {
+      setPortfolio(
+        staticPortfolio.map((item) => ({
           ...item,
-          trailerUrl: item.trailerUrl ?? item.trailler ?? null,
-        }));
-        setPortfolio(normalized);
-      } catch (err: any) {
-        console.error("Error fetching portfolio:", err.message);
-        setPortfolio([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchPortfolio();
+          ownerProducer: item.ownerProducer || "Unknown",
+        }))
+      );
+      setLoading(false);
+    }, 1200);
   }, []);
 
   // No-op: dialog removed
@@ -83,7 +69,7 @@ export default function PortfolioPage() {
             portfolio.map((item) => (
               <Card
                 key={item.id}
-                className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-all overflow-hidden group"
+                className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-all overflow-hidden group w-full h-full min-h-[420px] flex flex-col"
               >
                 <motion.div
                   className="relative h-64 overflow-hidden"
@@ -110,6 +96,23 @@ export default function PortfolioPage() {
                   <p className="text-[#9CA3AF] text-sm leading-relaxed">
                     {item.description}
                   </p>
+
+                  <div className="text-xs text-[#C5A36C] mb-1">
+                    <strong>Owner/Producer:</strong> {item.ownerProducer}
+                  </div>
+                  {item.trailerUrl && (
+                    <div className="text-xs text-[#C5A36C] mb-1">
+                      <strong>Trailer:</strong>{" "}
+                      <a
+                        href={item.trailerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#F97316] underline hover:text-[#F59E42] transition-colors"
+                      >
+                        Watch Trailer
+                      </a>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))

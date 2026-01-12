@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Mic, Video, Lightbulb, Music, Camera, Headphones } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { services as staticServices } from "@/lib/services-data";
 
 interface Service {
   id: string;
@@ -49,27 +50,17 @@ export default function ServicesPage() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
-    async function fetchServices() {
-      setLoading(true);
-      try {
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
-        const res = await fetch(`${apiUrl}/public/services`);
-        if (!res.ok) throw new Error("Failed to fetch services");
-        const data = await res.json();
-        setServices(Array.isArray(data) ? data : []);
-      } catch (err) {
-        const errorMsg =
-          err && typeof err === "object" && "message" in err
-            ? (err as any).message
-            : String(err);
-        console.error("Error fetching services:", errorMsg);
-        setServices([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchServices();
+    setLoading(true);
+    setTimeout(() => {
+      setServices(
+        staticServices.map((s) => ({
+          ...s,
+          title: s.name,
+          icon: s.icon || "lightbulb",
+        }))
+      );
+      setLoading(false);
+    }, 1200); // Simulate loading
   }, []);
 
   // detect small screens (matches Tailwind 'sm' breakpoint)
@@ -173,14 +164,14 @@ export default function ServicesPage() {
                             iconMap[service.icon] || Lightbulb;
                           return (
                             <div key={service.id || idx} className="px-2">
-                              <Card className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors">
+                              <Card className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors w-full h-full min-h-[250px] flex flex-col justify-between">
                                 <CardHeader>
                                   <IconComponent className="w-12 h-12 text-[#F97316] mb-4" />
                                   <CardTitle className="text-[#F3F4F6]">
                                     {service.title}
                                   </CardTitle>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="flex-1 flex flex-col">
                                   <p className="text-[#9CA3AF] mb-4 leading-relaxed">
                                     {service.description}
                                   </p>
@@ -233,7 +224,8 @@ export default function ServicesPage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[#F97316] hover:bg-[#EA580C] text-white w-full sm:w-auto"
+                variant="default"
+                className="text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase w-full sm:w-auto bg-[#F97316] hover:bg-[#EA580C] text-white"
               >
                 <Link href="/booking" className="block text-center w-full">
                   Start Your Project Today

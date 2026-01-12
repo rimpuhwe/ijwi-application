@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { supabase } from "../../lib/supabaseClient";
+// import { supabase } from "../../lib/supabaseClient";
 import { DayPicker } from "react-day-picker";
 import type { DateRange } from "react-day-picker";
 import "react-day-picker/dist/style.css";
@@ -47,81 +47,17 @@ export default function BookingPage() {
   const [fallbackUsed, setFallbackUsed] = useState(false);
   const [range, setRange] = useState<DateRange | undefined>(undefined);
 
-  // Load service categories from Supabase
+  // Use static service categories for public frontend
   useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        // select all columns so we don't fail if the display column isn't named `name`
-        const { data, error } = await supabase.from("services").select("*");
-        if (error) throw error;
-        if (!mounted) return;
-
-        // If there are rows, try to infer a display name field (many schemas use `title` or `name`)
-        if (Array.isArray(data) && data.length > 0) {
-          const candidates = [
-            "name",
-            "title",
-            "service",
-            "label",
-            "category",
-            "service_name",
-          ];
-          const mapped = (data as any[]).map((row) => {
-            let display: string | undefined;
-            for (const c of candidates) {
-              if (
-                row &&
-                Object.prototype.hasOwnProperty.call(row, c) &&
-                row[c]
-              ) {
-                display = String(row[c]);
-                break;
-              }
-            }
-            // fallback to id if nothing found
-            return {
-              id: String(row.id ?? row._id ?? JSON.stringify(row)),
-              name: display ?? String(row.id ?? "Service"),
-            };
-          });
-          setServices(mapped);
-          setFallbackUsed(false);
-        } else {
-          // empty table — use local defaults
-          setServices([
-            { id: "dialog-adr", name: "Dialog editing & ADR" },
-            { id: "sound-design", name: "Sound design & Editing" },
-            { id: "mixing-mastering", name: "Mixing & Mastering" },
-            { id: "foley", name: "Foley recording" },
-            { id: "music-scoring", name: "Music composition & Scoring" },
-            { id: "surround-dolby", name: "5.1 Surround & Dolby Atmos" },
-          ]);
-          setFallbackUsed(true);
-        }
-      } catch (err: any) {
-        // Show a concise, helpful message — supabase returns structured errors sometimes
-        console.error(
-          "Failed loading services:",
-          err?.message ?? JSON.stringify(err)
-        );
-        if (mounted) {
-          setServices([
-            { id: "dialog-adr", name: "Dialog editing & ADR" },
-            { id: "sound-design", name: "Sound design & Editing" },
-            { id: "mixing-mastering", name: "Mixing & Mastering" },
-            { id: "foley", name: "Foley recording" },
-            { id: "music-scoring", name: "Music composition & Scoring" },
-            { id: "surround-dolby", name: "5.1 Surround & Dolby Atmos" },
-          ]);
-          setFallbackUsed(true);
-        }
-      }
-    }
-    load();
-    return () => {
-      mounted = false;
-    };
+    setServices([
+      { id: "dialog-adr", name: "Dialog editing & ADR" },
+      { id: "sound-design", name: "Sound design & Editing" },
+      { id: "mixing-mastering", name: "Mixing & Mastering" },
+      { id: "foley", name: "Foley recording" },
+      { id: "music-scoring", name: "Music composition & Scoring" },
+      { id: "surround-dolby", name: "5.1 Surround & Dolby Atmos" },
+    ]);
+    setFallbackUsed(true);
   }, []);
 
   // keep form values in sync with date picker
