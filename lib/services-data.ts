@@ -1,44 +1,43 @@
 // List of service objects for the frontend (no backend fetch)
 export const services = [
   {
-    id: "dialog-adr",
-    name: "Dialog editing & ADR",
-    icon: "mic",
+    id: "sound-design",
+    name: "Sound Editing & Design",
+    icon: " slidersHorizontal",
     description:
-      "Professional dialogue editing and Automated Dialogue Replacement for clear, crisp sound.",
-    features: [
-      "Dialogue editing",
-      "ADR sessions",
-      "Voiceovers",
-      "Sync-to-picture recording",
-      "Multilingual recording",
-    ],
+      "From subtle ambiences to powerful effects, we design sounds that elevate your story."
   },
   {
-    id: "sound-design",
-    name: "Sound design & Editing",
-    icon: "headphones",
+    id: "dialogue-adr",
+    name: " Dialogue Editing & ADR",
+    icon: "mic",
     description:
-      "Immersive soundscapes and effects to bring your story to life.",
-    features: [
-      "Foley",
-      "Sound effects",
-      "Ambience creation",
-      "Noise reduction",
-      "Sound restoration",
-    ],
+      "Clean, clear, and emotionally true — we make your dialogue shine."
+   
   },
   {
     id: "mixing-mastering",
     name: "Mixing & Mastering",
-    icon: "music",
-    description: "Final polish for cinema, TV, or streaming platforms.",
-    features: [
-      "Stereo, 5.1, or Dolby Atmos mixing",
-      "Sound balancing",
-      "Loudness mastering",
-      "Final deliverables for DCP or broadcast",
-    ],
+    icon: "headphones",
+    description: "Cinema-quality audio mixing in stereo and surround formats."
   },
-  // Add more services as needed
+  {
+    id: "foley-recording",
+    name: " Foley Recording",
+    icon: "drum",
+    description: "Custom footsteps, movements, and textures recorded in our studio."
+  },
+  {
+    id: "music-composition",
+    name: "Music Composition & Scoring",
+    icon: "music",
+    description: "Original African-inspired film scores that match your story’s rhythm."
+  },
+  {
+    id: "surround-sound",
+    name: "5.1 surround & Dolb Atmos",
+    icon: "video",
+    description: "Immersive surround sound mixing for cinema and home theater."
+  }
+
 ];

@@ -97,22 +97,9 @@ export default function PortfolioPage() {
                     {item.description}
                   </p>
 
-                  <div className="text-xs text-[#C5A36C] mb-1">
-                    <strong>Owner/Producer:</strong> {item.ownerProducer}
+                  <div className="text-md mb-1 text-orange-500">
+                    <strong className="text-white">Owner:</strong> {item.ownerProducer}
                   </div>
-                  {item.trailerUrl && (
-                    <div className="text-xs text-[#C5A36C] mb-1">
-                      <strong>Trailer:</strong>{" "}
-                      <a
-                        href={item.trailerUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#F97316] underline hover:text-[#F59E42] transition-colors"
-                      >
-                        Watch Trailer
-                      </a>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
             ))

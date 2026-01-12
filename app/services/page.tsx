@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Mic, Video, Lightbulb, Music, Camera, Headphones } from "lucide-react";
+import { Mic, Music, Headphones, SlidersHorizontal , Drum , Video } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { services as staticServices } from "@/lib/services-data";
 
@@ -32,10 +32,10 @@ interface Service {
 const iconMap: Record<string, any> = {
   mic: Mic,
   video: Video,
-  lightbulb: Lightbulb,
+  drum: Drum,
   music: Music,
-  camera: Camera,
   headphones: Headphones,
+  slidersHorizontal: SlidersHorizontal,
 };
 
 export default function ServicesPage() {
@@ -161,7 +161,7 @@ export default function ServicesPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         {group.map((service) => {
                           const IconComponent =
-                            iconMap[service.icon] || Lightbulb;
+                            iconMap[service.icon] || Music;
                           return (
                             <div key={service.id || idx} className="px-2">
                               <Card className="bg-[#1A1A1A] border-[#27272A] hover:border-[#F97316] transition-colors w-full h-full min-h-[250px] flex flex-col justify-between">
