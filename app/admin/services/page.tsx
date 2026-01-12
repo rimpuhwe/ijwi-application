@@ -15,6 +15,7 @@ import {
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { ServiceDialog } from "@/components/service-dialog";
 import type { Service } from "@/lib/services-data";
+import { getJwtCookie } from "@/lib/jwt";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,7 +46,11 @@ export default function ServicesPage() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await fetch("/api/services");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/services`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         if (!res.ok) throw new Error("Failed to fetch services");
         const data = await res.json();
         setServices(Array.isArray(data) ? data : []);
@@ -58,8 +63,7 @@ export default function ServicesPage() {
   }, []);
 
   const saveToLocalStorage = (data: Service[]) => {
-    // Removed: localStorage logic
-    // Use Supabase for all CRUD
+    // Removed: localStorage and Supabase logic
     setServices(data);
   };
 
@@ -79,18 +83,26 @@ export default function ServicesPage() {
       try {
         let res;
         const icon = getIconFromTitle(service.title);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
         if ("id" in service) {
           // Update
-          res = await fetch(`/api/services/${service.id}`, {
+          res = await fetch(`${apiUrl}/admin/services/${service.id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
             body: JSON.stringify({ ...service, icon }),
           });
         } else {
           // Create
-          res = await fetch("/api/services", {
+          res = await fetch(`${apiUrl}/admin/services`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
             body: JSON.stringify({ ...service, icon }),
           });
         }
@@ -100,7 +112,11 @@ export default function ServicesPage() {
       }
       // Refetch after save
       try {
-        const res = await fetch("/api/services");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/services`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         const data = await res.json();
         setServices(Array.isArray(data) ? data : []);
       } catch {
@@ -119,14 +135,23 @@ export default function ServicesPage() {
   const handleDelete = (id: string) => {
     async function deleteService() {
       try {
-        const res = await fetch(`/api/services/${id}`, { method: "DELETE" });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/services/${id}`, {
+          method: "DELETE",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         if (!res.ok) throw new Error("Failed to delete service");
       } catch (error: any) {
         console.error("Error deleting service:", error?.message || error);
       }
       // Refetch after delete
       try {
-        const res = await fetch("/api/services");
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/services`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         const data = await res.json();
         setServices(Array.isArray(data) ? data : []);
       } catch {

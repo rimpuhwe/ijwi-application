@@ -1,5 +1,5 @@
 "use client";
-import { supabase } from "@/lib/supabaseClient";
+
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { PortfolioDialog } from "@/components/portfolio-dialog";
 import type { PortfolioWork } from "@/lib/portfolio-data";
+import { getJwtCookie } from "@/lib/jwt";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,59 +20,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 export default function PortfolioPage() {
-  const defaultPortfolio = [
-    {
-      id: "1",
-      title: "Brand Documentary",
-      description:
-        "A cinematic documentary showcasing the journey of a local business",
-      category: "Video Production",
-      imageUrl: "/cinematic-documentary-film-production.jpg",
-      clientName: "Local Business Co.",
-    },
-    {
-      id: "2",
-      title: "Music Album Production",
-      description:
-        "Full album recording, mixing, and mastering for emerging artist",
-      category: "Audio Production",
-      imageUrl: "/music-studio-recording-session.jpg",
-      clientName: "Rising Star Artist",
-    },
-    {
-      id: "3",
-      title: "Commercial Campaign",
-      description: "Multi-platform commercial campaign with stunning visuals",
-      category: "Video Production",
-      imageUrl: "/commercial-video-production-set.jpg",
-      clientName: "Tech Startup",
-    },
-    {
-      id: "4",
-      title: "Podcast Series",
-      description: "Professional podcast recording and post-production",
-      category: "Audio Production",
-      imageUrl: "/podcast-recording-studio-setup.jpg",
-      clientName: "Media Company",
-    },
-    {
-      id: "5",
-      title: "Event Coverage",
-      description: "Comprehensive video and audio coverage of corporate event",
-      category: "Video Production",
-      imageUrl: "/event-videography-coverage.jpg",
-      clientName: "Corporate Client",
-    },
-    {
-      id: "6",
-      title: "Sound Design Project",
-      description:
-        "Custom sound design and audio branding for digital platform",
-      category: "Sound Design",
-      imageUrl: "/sound-design-audio-mixing.jpg",
-      clientName: "Digital Platform",
-    },
-  ];
+  // Removed legacy defaultPortfolio and Supabase logic
 
   const [works, setWorks] = useState<PortfolioWork[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -81,76 +30,68 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     async function fetchPortfolio() {
-      const { data, error } = await supabase
-        .from("portfolio")
-        .select("*")
-        .order("id", { ascending: true });
-      if (error) {
-        console.error("Error fetching portfolio:", error.message);
-        setWorks([]);
-      } else if (data && data.length > 0) {
-        // Normalize trailer field name: support either 'trailerUrl' or the DB column 'trailler'
-        const normalized = data.map((item: any) => ({
-          ...item,
-          trailerUrl: item.trailerUrl ?? item.trailler ?? null,
-        }));
-        setWorks(normalized);
-      } else {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/portfolios`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error("Failed to fetch portfolios");
+        const data = await res.json();
+        setWorks(Array.isArray(data) ? data : []);
+      } catch (error: any) {
+        console.error("Error fetching portfolios:", error?.message || error);
         setWorks([]);
       }
     }
     fetchPortfolio();
   }, []);
 
-  const saveToLocalStorage = (data: PortfolioWork[]) => {
-    // Removed: localStorage logic
-    // Use Supabase for all CRUD
-    setWorks(data);
-  };
+  // Removed: localStorage and Supabase logic
 
   const handleSave = (work: Omit<PortfolioWork, "id"> | PortfolioWork) => {
     async function saveWork() {
-      if ("id" in work) {
-        // Update
-        // map trailerUrl to both possible column names for compatibility
-        // Build payload for Supabase: only include the DB column `trailler`.
-        const payload: any = { ...work };
-        if ((work as any).trailerUrl) {
-          payload.trailler = (work as any).trailerUrl; // map client field to DB column
-          // Remove the client-side key so Supabase doesn't attempt to write `trailerUrl`
-          delete payload.trailerUrl;
+      try {
+        let res;
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        if ("id" in work) {
+          // Update
+          res = await fetch(`${apiUrl}/admin/portfolios/${work.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(work),
+          });
+        } else {
+          // Create
+          res = await fetch(`${apiUrl}/admin/portfolios`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify(work),
+          });
         }
-        const { error } = await supabase
-          .from("portfolio")
-          .update(payload)
-          .eq("id", work.id);
-        if (error)
-          console.error("Error updating portfolio work:", error.message);
-      } else {
-        // Create
-        const { data: userData, error: userError } =
-          await supabase.auth.getUser();
-        if (userError || !userData?.user) {
-          alert("You must be logged in to create a portfolio item.");
-          return;
-        }
-        const user_id = userData.user.id;
-        // For inserts, map client `trailerUrl` -> DB `trailler` and avoid sending `trailerUrl` key
-        const payload: any = { ...work, user_id };
-        if ((work as any).trailerUrl) {
-          payload.trailler = (work as any).trailerUrl;
-          delete payload.trailerUrl;
-        }
-        const { error } = await supabase.from("portfolio").insert([payload]);
-        if (error)
-          console.error("Error creating portfolio work:", error.message);
+        if (!res.ok) throw new Error("Failed to save portfolio work");
+      } catch (error: any) {
+        console.error("Error saving portfolio work:", error?.message || error);
       }
       // Refetch after save
-      const { data } = await supabase
-        .from("portfolio")
-        .select("*")
-        .order("id", { ascending: true });
-      setWorks(data || []);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/portfolios`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setWorks(Array.isArray(data) ? data : []);
+      } catch {
+        setWorks([]);
+      }
       setSelectedWork(null);
     }
     saveWork();
@@ -163,14 +104,29 @@ export default function PortfolioPage() {
 
   const handleDelete = (id: string) => {
     async function deleteWork() {
-      const { error } = await supabase.from("portfolio").delete().eq("id", id);
-      if (error) console.error("Error deleting portfolio work:", error.message);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/portfolios/${id}`, {
+          method: "DELETE",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error("Failed to delete portfolio work");
+      } catch (error: any) {
+        console.error("Error deleting portfolio work:", error?.message || error);
+      }
       // Refetch after delete
-      const { data } = await supabase
-        .from("portfolio")
-        .select("*")
-        .order("id", { ascending: true });
-      setWorks(data || []);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const token = getJwtCookie();
+        const res = await fetch(`${apiUrl}/admin/portfolios`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setWorks(Array.isArray(data) ? data : []);
+      } catch {
+        setWorks([]);
+      }
       setDeleteDialogOpen(false);
       setWorkToDelete(null);
     }

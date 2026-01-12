@@ -1,8 +1,10 @@
 "use client";
 
 
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setJwtCookie } from "@/lib/jwt";
 
 export default function AdminLoginPage() {
 
@@ -17,12 +19,13 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/admin-login", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+      const res = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      let data = { success: false, error: "Unknown error" };
+      let data = { success: false, error: "Unknown error", token: undefined };
       try {
         data = await res.json();
       } catch (e) {
@@ -30,8 +33,8 @@ export default function AdminLoginPage() {
         setLoading(false);
         return;
       }
-      if (res.ok && data.success) {
-        document.cookie = `admin_auth=1; path=/;`;
+      if (res.ok && data.token) {
+        setJwtCookie(data.token);
         router.replace("/admin/dashboard");
       } else {
         setError(data.error || `Login failed (${res.status})`);

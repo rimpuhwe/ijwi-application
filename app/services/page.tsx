@@ -52,7 +52,9 @@ export default function ServicesPage() {
     async function fetchServices() {
       setLoading(true);
       try {
-        const res = await fetch("/api/services");
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const res = await fetch(`${apiUrl}/public/services`);
         if (!res.ok) throw new Error("Failed to fetch services");
         const data = await res.json();
         setServices(Array.isArray(data) ? data : []);
