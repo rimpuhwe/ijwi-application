@@ -1,46 +1,22 @@
-export interface PortfolioWork {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  clientName: string;
-  // Optional trailer URL (mp4 or streaming link)
-  trailerUrl?: string | null;
-}
-
-// In-memory storage for portfolio works (in production, use a database)
-const portfolioWorks: PortfolioWork[] = []
-
-export function getPortfolioWorks(): PortfolioWork[] {
-  return portfolioWorks
-}
-
-export function getPortfolioWorkById(id: string): PortfolioWork | undefined {
-  return portfolioWorks.find((work) => work.id === id)
-}
-
-export function createPortfolioWork(work: Omit<PortfolioWork, "id">): PortfolioWork {
-  const newWork: PortfolioWork = {
-    ...work,
-    id: Date.now().toString(),
-  }
-  portfolioWorks.push(newWork)
-  return newWork
-}
-
-export function updatePortfolioWork(id: string, updates: Partial<PortfolioWork>): PortfolioWork | null {
-  const index = portfolioWorks.findIndex((work) => work.id === id)
-  if (index === -1) return null
-
-  portfolioWorks[index] = { ...portfolioWorks[index], ...updates }
-  return portfolioWorks[index]
-}
-
-export function deletePortfolioWork(id: string): boolean {
-  const index = portfolioWorks.findIndex((work) => work.id === id)
-  if (index === -1) return false
-
-  portfolioWorks.splice(index, 1)
-  return true
-}
+// List of portfolio objects for the frontend (no backend fetch)
+export const portfolio = [
+  {
+    id: "1",
+    title: "Project One",
+    description: "A cinematic masterpiece for client A.",
+    category: "Film",
+    imageUrl: "/img.jpg",
+    trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    ownerProducer: "Client A",
+  },
+  {
+    id: "2",
+    title: "Project Two",
+    description: "Award-winning documentary for client B.",
+    category: "Documentary",
+    imageUrl: "/img.jpg",
+    trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    ownerProducer: "Client B",
+  },
+  // Add more portfolio items as needed
+];

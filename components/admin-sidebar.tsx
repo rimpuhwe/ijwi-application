@@ -4,9 +4,8 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Briefcase, FolderOpen, LogOut } from "lucide-react";
-import { logout } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "./ui/utils";
 
 const navItems = [
   {
@@ -30,9 +29,6 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-  };
 
   return (
     <>
@@ -74,7 +70,6 @@ export function AdminSidebar() {
         </nav>
         <div className="border-t border-[#27272A] p-2">
           <Button
-            onClick={handleLogout}
             variant="ghost"
             className="w-full justify-start gap-3 text-[#9CA3AF] hover:bg-[#0E0E0E] hover:text-[#F3F4F6]"
           >
@@ -112,7 +107,6 @@ export function AdminSidebar() {
           <h1 className="text-lg font-bold text-[#F97316]">IJWI Hub Admin</h1>
         </div>
         <Button
-          onClick={handleLogout}
           variant="ghost"
           className="text-[#9CA3AF]"
         >
