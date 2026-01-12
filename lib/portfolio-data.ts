@@ -1,4 +1,4 @@
-// List of portfolio objects for the frontend (no backend fetch)
+
 export const portfolio = [
   {
     id: "1",
