@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +30,8 @@ export default function PortfolioPage() {
   useEffect(() => {
     async function fetchPortfolio() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/portfolios`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -53,7 +53,8 @@ export default function PortfolioPage() {
     async function saveWork() {
       try {
         let res;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         if ("id" in work) {
           // Update
@@ -82,7 +83,8 @@ export default function PortfolioPage() {
       }
       // Refetch after save
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/portfolios`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -105,7 +107,8 @@ export default function PortfolioPage() {
   const handleDelete = (id: string) => {
     async function deleteWork() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/portfolios/${id}`, {
           method: "DELETE",
@@ -113,11 +116,15 @@ export default function PortfolioPage() {
         });
         if (!res.ok) throw new Error("Failed to delete portfolio work");
       } catch (error: any) {
-        console.error("Error deleting portfolio work:", error?.message || error);
+        console.error(
+          "Error deleting portfolio work:",
+          error?.message || error
+        );
       }
       // Refetch after delete
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/portfolios`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},

@@ -46,7 +46,8 @@ export default function ServicesPage() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/services`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -76,14 +77,16 @@ export default function ServicesPage() {
       if (lower.includes("video")) return "video";
       if (lower.includes("mic") || lower.includes("record")) return "mic";
       if (lower.includes("camera") || lower.includes("photo")) return "camera";
-      if (lower.includes("creative") || lower.includes("consult")) return "lightbulb";
+      if (lower.includes("creative") || lower.includes("consult"))
+        return "lightbulb";
       return "lightbulb";
     };
     async function saveService() {
       try {
         let res;
         const icon = getIconFromTitle(service.title);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         if ("id" in service) {
           // Update
@@ -112,7 +115,8 @@ export default function ServicesPage() {
       }
       // Refetch after save
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/services`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -135,7 +139,8 @@ export default function ServicesPage() {
   const handleDelete = (id: string) => {
     async function deleteService() {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/services/${id}`, {
           method: "DELETE",
@@ -147,7 +152,8 @@ export default function ServicesPage() {
       }
       // Refetch after delete
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
         const token = getJwtCookie();
         const res = await fetch(`${apiUrl}/admin/services`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
