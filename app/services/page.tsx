@@ -225,7 +225,7 @@ export default function ServicesPage() {
                 asChild
                 size="lg"
                 variant="default"
-                className="text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase w-full sm:w-auto bg-[#F97316] hover:bg-[#EA580C] text-white"
+                className="text-lg px-10 py-6 font-bold rounded-full shadow-2xl tracking-wide uppercase w-full sm:w-auto bg-[#F97316]! hover:bg-[#EA580C]! text-white!"
               >
                 <Link href="/booking" className="block text-center w-full">
                   Start Your Project Today
