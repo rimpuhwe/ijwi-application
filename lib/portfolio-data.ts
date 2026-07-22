@@ -53,5 +53,14 @@ export const portfolio = [
     imageUrl: "/img.jpg",
     trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     ownerProducer: "Shimwa Cedric",
+  },
+   {
+    id: "7",
+    title: "UMUNYANA",
+    description: "Award-winning documentary for client B.",
+    category: "Sound Design & Mixing",
+    imageUrl: "/umunyana.jpg",
+    trailerUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    ownerProducer: "Cedric Mizero",
   }
 ];

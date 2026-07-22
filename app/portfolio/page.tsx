@@ -98,7 +98,7 @@ export default function PortfolioPage() {
                   </p>
 
                   <div className="text-md mb-1 text-orange-500">
-                    <strong className="text-white">Owner:</strong> {item.ownerProducer}
+                    <strong className="text-white">Director:</strong> {item.ownerProducer}
                   </div>
                 </CardContent>
               </Card>
